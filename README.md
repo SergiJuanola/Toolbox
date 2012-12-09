@@ -26,3 +26,5 @@ The Toolbox main motto is _"method chaining is simple as hell"_, and that's why 
     Dice::build()->setMin(1)->setMax(6)->roll();
 
 ###Toolbox fitx in your server
+
+Because modern micro frameworks need PHP 5.3, it can be a problem for old or really stable servers. Thats why Toolbox can be in a server holding **PHP 5.1**.
