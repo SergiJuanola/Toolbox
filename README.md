@@ -27,4 +27,4 @@ The Toolbox main motto is _"method chaining is simple as hell"_, and that's why 
 
 ###Toolbox fitx in your server
 
-Because modern micro frameworks need PHP 5.3, it can be a problem for old or really stable servers. Thats why Toolbox can be in a server holding **PHP 5.1**.
+Because modern micro frameworks need PHP 5.3, it can be a problem for old or really stable servers. That's why Toolbox can be hosted in a server using **PHP 5.1**.

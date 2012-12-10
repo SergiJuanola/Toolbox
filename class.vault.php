@@ -63,6 +63,11 @@ class Vault extends Builder {
 		return $this;
 	}
 
+	public function isUrlSafe()
+	{
+		return isset($this->urlSafe) && $this->urlSafe;
+	}
+
 	private function needsIV()
 	{
 		$needsIV = mcrypt_get_iv_size($this->algoritm, $this->mode);
@@ -103,12 +108,36 @@ class Vault extends Builder {
 		{
 			$encrypted = mcrypt_encrypt($this->algorithm, $this->key, $text, $this->mode);
 		}
-
+		if($this->isUrlSafe())
+		{
+			$encrypted = Vault::base64urlEncode($encrypted);
+		}
+		return $encrypted;
 	}
 
-	public function decrypt()
+	public function decrypt($encrypted)
 	{
-
+		if($this->isUrlSafe())
+		{
+			$encrypted = Vault::base64urlDecode($encrypted);
+		}
+		if($this->needsIV())
+		{
+			$this->generateCongruentIV();
+			$text = mcrypt_decrypt($this->algorithm, $this->key, $encrypted, $this->mode, $this->iv);
+		}
+		else
+		{
+			$text = mcrypt_decrypt($this->algorithm, $this->key, $encrypted, $this->mode);
+		}
+		return $text;
 	}
 
+	private static function base64urlEncode($data) { 
+		return rtrim(strtr(base64_encode($data), '+/', '-_'), '='); 
+	} 
+
+	private static function base64urlDecode($data) { 
+		return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT)); 
+	} 
 }
