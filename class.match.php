@@ -48,7 +48,7 @@ class Match extends Builder
 		return $this;
 	}
 
-	public function match($uri, $callback)
+	public function matchAny($uri, $callback)
 	{
 		$any = $this->any;
 		$any[$uri] = $callback;
@@ -59,7 +59,8 @@ class Match extends Builder
 	public function fire()
 	{
 		$matchedUri = $this->basePath()->cleanUri()->matchUri();
-		var_dump($matchedUri);
+		if(!empty($matchedUri))
+			$this->matched = $matchedUri;
 		return $this;
 	}
 
@@ -78,24 +79,59 @@ class Match extends Builder
 		return $this;
 	}
 
+	private static function cleanParams($uri)
+	{
+		$find = array(
+			"@{((\w+):int)}@",
+			"@{((\w+):string)}@",
+			"@{((\w+):\w+)}@",
+			"@{((\w+))}@",
+		);
+		$replace = array(
+			"(?<\${2}>\d+)",
+			"(?<\${2}>\w+)",
+			"(?<\${2}>[a-zA-Z0-9\+]+)",
+			"(?<\${2}>[a-zA-Z0-9\+]+)",
+		);
+		return preg_replace($find, $replace, $uri);
+	}
+
 	private function matchUri()
 	{
 		$method = strtolower($_SERVER['REQUEST_METHOD']);
 		foreach ($this->{$method} as $uri => $callback) {
-			$result = preg_match("@^".preg_quote($uri)."$@", $this->uri);
+			$oriUri = $uri;
+			$uri = Match::cleanParams($uri);
+			$result = preg_match("@^".$uri."$@", $this->uri, $params);
 			if($result === 1)
+				foreach($params as $key=>$var){ 
+					if(is_numeric($key)){ 
+						unset($params[$key]); 
+					} 
+				} 
 				return array(
 								'method' => $method,
-								'uri' => $uri,
-								'callback' => $callback);
+								'rule' => $uri,
+								'uri' => $oriUri,
+								'callback' => $callback,
+								'params'=> $params);
 		}
 		foreach ($this->any as $uri => $callback) {
-			$result = preg_match("@^".preg_quote($uri)."$@", $this->uri);
+			$oriUri = $uri;
+			$uri = Match::cleanParams($uri);
+			$result = preg_match("@^".$uri."$@", $this->uri, $params);
 			if($result === 1)
+				foreach($params as $key=>$var){ 
+					if(is_numeric($key)){ 
+						unset($params[$key]); 
+					} 
+				} 
 				return array(
 								'method' => $method,
-								'uri' => $uri,
-								'callback' => $callback);
+								'rule' => $uri,
+								'uri' => $oriUri,
+								'callback' => $callback,
+								'params'=> $params);
 		}
 		return null;
 	}

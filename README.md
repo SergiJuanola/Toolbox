@@ -25,6 +25,20 @@ The Toolbox main motto is _"method chaining is simple as hell"_, and that's why 
 
     Dice::build()->setMin(1)->setMax(6)->roll();
 
-###Toolbox fitx in your server
+###Toolbox fits in your server
 
-Because modern micro frameworks need PHP 5.3, it can be a problem for old or really stable servers. That's why Toolbox can be hosted in a server using **PHP 5.1**.
+Because modern micro frameworks need PHP 5.3, it can be a problem for old or really stable servers. That's why Toolbox can be hosted in a server using **PHP 5.2.2**.
+
+###Toolbox's Match enlightens your websites
+
+The Uri Matcher called Match has a very easy and compact structure:
+
+	$match = Match::build()
+	->get('/user/{userid:int}', 'User::viewById')
+	->get('/user/{user:string}', 'User::viewByName')
+	->get('/user/{user}', 'User::view')
+	->get('/user', 'User::showProfile')
+	->post('/user/{user:int}', 'User::editUser')
+	->post('/user', 'User::newUser')
+	->matchAny('/', 'Home::index')
+	->fire();
