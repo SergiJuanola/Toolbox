@@ -58,7 +58,8 @@ class Match extends Builder
 
 	public function fire()
 	{
-		$this->basePath()->cleanUri()->matchUri();
+		$matchedUri = $this->basePath()->cleanUri()->matchUri();
+		var_dump($matchedUri);
 		return $this;
 	}
 
@@ -80,12 +81,22 @@ class Match extends Builder
 	private function matchUri()
 	{
 		$method = strtolower($_SERVER['REQUEST_METHOD']);
-		var_dump($this->uri);
 		foreach ($this->{$method} as $uri => $callback) {
-			var_dump($uri, $callback, preg_match("/^".$uri."$/", $this->uri));
+			$result = preg_match("@^".preg_quote($uri)."$@", $this->uri);
+			if($result === 1)
+				return array(
+								'method' => $method,
+								'uri' => $uri,
+								'callback' => $callback);
 		}
 		foreach ($this->any as $uri => $callback) {
-			var_dump($uri, $callback, preg_match("/^".$uri."$/", $this->uri));
+			$result = preg_match("@^".preg_quote($uri)."$@", $this->uri);
+			if($result === 1)
+				return array(
+								'method' => $method,
+								'uri' => $uri,
+								'callback' => $callback);
 		}
+		return null;
 	}
 }
