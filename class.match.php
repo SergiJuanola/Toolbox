@@ -60,8 +60,29 @@ class Match extends Builder
 	{
 		$matchedUri = $this->basePath()->cleanUri()->matchUri();
 		if(!empty($matchedUri))
+		{
 			$this->matched = $matchedUri;
+			$this->callController();
+		}
 		return $this;
+	}
+
+	private function callController()
+	{
+		$callback = $this->matched['callback'];
+		$parts = explode("::", $callback);
+		if(count($parts)==2)
+		{
+			require_once($this->matchbox.'controller.'.strtolower($parts[0]).'.php');
+			$parts[0] = $parts[0].'Controller';
+			$reflector = new ReflectionMethod($parts[0], $parts[1]);
+			$params = array();
+			foreach ($reflector->getParameters() as $param) {
+			    $params[] = $param->name;
+			}
+			$controller = new $parts[0]($this, $this->hasToolbox()? Toolbox::build() : null);
+			$controller->{$parts[1]}($this->matched['params']['userid']);
+		}
 	}
 
 	private function cleanUri()
