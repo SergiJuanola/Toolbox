@@ -9,7 +9,6 @@ class Match extends Builder
 		'post'=>array(),
 		'put'=>array(),
 		'delete'=>array(),
-		'any'=>array(),
 	);
 
 	public static function build($config = array()) {
@@ -50,9 +49,11 @@ class Match extends Builder
 
 	public function matchAny($uri, $callback)
 	{
-		$any = $this->any;
-		$any[$uri] = $callback;
-		$this->any = $any;
+		$this
+		->get($uri, $callback)
+		->post($uri, $callback)
+		->put($uri, $callback)
+		->delete($uri, $callback);
 		return $this;
 	}
 
@@ -78,10 +79,10 @@ class Match extends Builder
 			$reflector = new ReflectionMethod($parts[0], $parts[1]);
 			$params = array();
 			foreach ($reflector->getParameters() as $param) {
-			    $params[] = $param->name;
+			    $params[] = $this->matched['params'][$param->name];
 			}
 			$controller = new $parts[0]($this, $this->hasToolbox()? Toolbox::build() : null);
-			$controller->{$parts[1]}($this->matched['params']['userid']);
+			call_user_func_array(array($controller, $parts[1]), $params);
 		}
 	}
 
@@ -109,10 +110,10 @@ class Match extends Builder
 			"@{((\w+))}@",
 		);
 		$replace = array(
-			"(?<\${2}>\d+)",
-			"(?<\${2}>\w+)",
-			"(?<\${2}>[a-zA-Z0-9\+]+)",
-			"(?<\${2}>[a-zA-Z0-9\+]+)",
+			"(?P<\\2>\d+)",
+			"(?P<\\2>\w+)",
+			"(?P<\\2>[a-zA-Z0-9\+]+)",
+			"(?P<\\2>[a-zA-Z0-9\+]+)",
 		);
 		return preg_replace($find, $replace, $uri);
 	}
@@ -125,6 +126,7 @@ class Match extends Builder
 			$uri = Match::cleanParams($uri);
 			$result = preg_match("@^".$uri."$@", $this->uri, $params);
 			if($result === 1)
+			{
 				foreach($params as $key=>$var){ 
 					if(is_numeric($key)){ 
 						unset($params[$key]); 
@@ -132,27 +134,11 @@ class Match extends Builder
 				} 
 				return array(
 								'method' => $method,
-								'rule' => $uri,
-								'uri' => $oriUri,
+								'rule' => $oriUri,
+								'regex' => $uri,
 								'callback' => $callback,
 								'params'=> $params);
-		}
-		foreach ($this->any as $uri => $callback) {
-			$oriUri = $uri;
-			$uri = Match::cleanParams($uri);
-			$result = preg_match("@^".$uri."$@", $this->uri, $params);
-			if($result === 1)
-				foreach($params as $key=>$var){ 
-					if(is_numeric($key)){ 
-						unset($params[$key]); 
-					} 
-				} 
-				return array(
-								'method' => $method,
-								'rule' => $uri,
-								'uri' => $oriUri,
-								'callback' => $callback,
-								'params'=> $params);
+			}
 		}
 		return null;
 	}
