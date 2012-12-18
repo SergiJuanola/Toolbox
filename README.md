@@ -38,3 +38,25 @@ The Uri Matcher called Match has a very easy and compact structure:
 	->post('/user', 'User::newUser')
 	->matchAny('/', 'Home::index')
 	->fire();
+
+##Tools
+
+###`Dice`
+
+`Dice` works just like a regular dice. With `Dice` you can create a randomizer from a number to another and roll it as much as you want. It will pop random integer numbers, and even skip some of them by defining a `step`.
+
+###`Vault`
+
+`Vault` grabs your information and converts it into something really secure. It uses by default the 256-bit AES Encryption, so it is virtually impossible to break.
+
+###`Keychain`
+
+`Keychain` is your perfect tool as a Software company. It is able to generate any kind of serial number you want to use. It also checks for other serials you try, if they meet your requirements.
+
+###`Session`
+
+`Session` is a better way to use sessions in PHP. It lets you get and set parameters, using default values if they aren't set.
+
+###`Match`
+
+In case you need friendly urls, `Match` is your friend. It is a compact tool for url matching. It lets your `index.php` file really clean and small, as it gets the right methods from within independent classes, stored in a folder, wisely referred to as `matchbox`. These classes need to extend `Controller`.
