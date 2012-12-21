@@ -27,7 +27,7 @@ The Toolbox main motto is _"method chaining is simple as hell"_, and that's why 
 
 ###Toolbox's Match enlightens your websites
 
-The Uri Matcher called Match has a very easy and compact structure:
+The Uri Matcher called `Match` has a very easy and compact structure:
 
 	$match = Match::build()
 	->get('/user/{userid:int}', 'User::viewById')
@@ -41,22 +41,59 @@ The Uri Matcher called Match has a very easy and compact structure:
 
 ##Tools
 
-###`Dice`
+###Dice
 
 `Dice` works just like a regular dice. With `Dice` you can create a randomizer from a number to another and roll it as much as you want. It will pop random integer numbers, and even skip some of them by defining a `step`.
 
-###`Vault`
+###Vault
 
 `Vault` grabs your information and converts it into something really secure. It uses by default the 256-bit AES Encryption, so it is virtually impossible to break.
 
-###`Keychain`
+###Keychain
 
-`Keychain` is your perfect tool as a Software company. It is able to generate any kind of serial number you want to use. It also checks for other serials you try, if they meet your requirements.
+`Keychain` is your perfect tool as a Software company. It is able to generate any kind of serial number you want to use. It also checks for other serials you try, if they meet your requirements. However, the possibilities are endless, as you can define unique identifiers for your users, instead of the classic ID.
 
-###`Session`
+###Session
 
 `Session` is a better way to use sessions in PHP. It lets you get and set parameters, using default values if they aren't set.
 
 ###`Match`
 
 In case you need friendly urls, `Match` is your friend. It is a compact tool for url matching. It lets your `index.php` file really clean and small, as it gets the right methods from within independent classes, stored in a folder, wisely referred to as `matchbox`. These classes need to extend `Controller`.
+
+###Brush
+
+`Brush` is a really simple rendering class. It is as simple as it can, actually. You can define a layout for every brush or use one by default, and then just hit `paint()`. Due to the extended use of `render()` named methods, it is an alias for `paint()`.
+
+#Setup
+
+Do you want to start a new project with **Toolbox**? In that case, just download the latest copy of Toolbox, uncompress it into a folder (in terms of organisation, it should be stored outside the html accessible folder). For our convenience, we will call this folder `/toolbox`, and we will store one level up from our root.
+
+Open your website root and write the following in an index.php file:
+
+	<?php 
+	require_once '../toolbox/class.toolbox.php';
+
+	$app = Toolbox::build(array(
+		'match' 	=>	array(
+							'matchbox'	=>	__DIR__.'/matchbox/'
+						),
+		'brush' 	=>	array(
+							'views'	=>	__DIR__.'/views/',
+							'layout' => 'layout.php',
+						)
+	));
+
+This creates a brand new entry point with all you need to create a friendly url website with templates. You should also create an .htaccess to redirect everything to index.php:
+
+	RewriteEngine on
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule . index.php
+
+Then, you can create a `Match` instance to start url matching:
+
+	// following index.php...
+	$match = Match::build()
+	->matchAny('/', 'Home::index')
+	->fire();
