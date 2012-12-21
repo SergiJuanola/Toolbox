@@ -9,6 +9,16 @@ class Brush extends Builder {
 		return new self($config);
 	}
 
+	public function setMatch($match)
+	{
+		$this->match = $match;
+	}
+
+	public function getMatch($match)
+	{
+		return $this->match;
+	}
+
 	public function render($view, $params = array(), $partial = FALSE, $return = FALSE)
 	{
 		foreach ( $params as $key => $value )
