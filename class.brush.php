@@ -30,7 +30,7 @@ class Brush extends Builder {
 		include $this->views.$view;
 		$content = ob_get_clean();
 
-		if($partial === FALSE)
+		if($partial === FALSE && !empty($this->layout))
 		{
 			ob_start();
 			include $this->views.$this->layout;
