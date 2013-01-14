@@ -9,16 +9,25 @@ class Match extends Builder
 		'post'=>array(),
 		'put'=>array(),
 		'delete'=>array(),
+		'hasLocale'=>FALSE,
+		'defaultLocale'=>NULL,
+		'localeLength'=>2,
 	);
 
 	public static function build($config = array()) {
 		return new self($config);
 	}
 
-	public function get($rule, $callback)
+	private function makeItLocale($uri)
+	{
+		return "/{{__locale:locale}}".$uri;
+	} 
+
+	public function get($uri, $callback)
 	{
 		$get = $this->get;
-		$get[$rule] = $callback;
+		$get[$this->makeItLocale($uri)] = $callback;
+		$get[$uri] = $callback;
 		$this->get = $get;
 		return $this;
 	}
@@ -26,6 +35,7 @@ class Match extends Builder
 	public function post($uri, $callback)
 	{
 		$post = $this->post;
+		$post[$this->makeItLocale($uri)] = $callback;
 		$post[$uri] = $callback;
 		$this->post = $post;
 		return $this;
@@ -34,6 +44,7 @@ class Match extends Builder
 	public function put($uri, $callback)
 	{
 		$put = $this->put;
+		$put[$this->makeItLocale($uri)] = $callback;
 		$put[$uri] = $callback;
 		$this->put = $put;
 		return $this;
@@ -42,6 +53,7 @@ class Match extends Builder
 	public function delete($uri, $callback)
 	{
 		$delete = $this->delete;
+		$delete[$this->makeItLocale($uri)] = $callback;
 		$delete[$uri] = $callback;
 		$this->delete = $delete;
 		return $this;
@@ -65,7 +77,41 @@ class Match extends Builder
 			$this->matched = $matchedUri;
 			$this->callController();
 		}
+		else
+		{
+			$this->fireCode(404);
+		}
 		return $this;
+	}
+
+	public function setHasLocale($hasLocale)
+	{
+		$this->hasLocale = $hasLocale;
+	}
+
+	public function hasLocale()
+	{
+		return $this->hasLocale;
+	}
+
+	public function setDefaultLocale($locale)
+	{
+		$this->defaultLocale = $locale;
+	}
+
+	public function getDefaultLocale()
+	{
+		return $this->defaultLocale;
+	}
+
+	public function setLocaleLength($localeLength)
+	{
+		$this->localeLength = $localeLength;
+	}
+
+	public function getLocaleLength()
+	{
+		return $this->localeLength;
 	}
 
 	private function callController()
@@ -82,6 +128,17 @@ class Match extends Builder
 			    $params[] = $this->matched['params'][$param->name];
 			}
 			$controller = new $parts[0]($this, $this->hasToolbox()? Toolbox::build() : null);
+			if($this->hasLocale)
+			{
+				if(isset($this->matched['params']['__locale']))
+				{
+					$this->locale = $this->matched['params']['__locale'];
+				}
+				else
+				{
+					$this->locale = $this->defaultLocale;
+				}
+			}
 			$controller->beforeFire();
 			call_user_func_array(array($controller, $parts[1]), $params);
 			$controller->afterFire();
@@ -103,17 +160,19 @@ class Match extends Builder
 		return $this;
 	}
 
-	private static function cleanParams($uri)
+	private function cleanParams($uri)
 	{
 		$find = array(
-			"@{((\w+):int)}@",
-			"@{((\w+):string)}@",
-			"@{((\w+):\w+)}@",
-			"@{((\w+))}@",
+			"@{{((\w+):int)}}@",
+			"@{{((\w+):string)}}@",
+			"@{{((\w+):locale)}}@",
+			"@{{((\w+):\w+)}}@",
+			"@{{((\w+))}}@",
 		);
 		$replace = array(
 			"(?P<\\2>\d+)",
 			"(?P<\\2>\w+)",
+			"(?P<\\2>\w{".$this->localeLength."})",
 			"(?P<\\2>[a-zA-Z0-9\+]+)",
 			"(?P<\\2>[a-zA-Z0-9\+]+)",
 		);
@@ -125,7 +184,7 @@ class Match extends Builder
 		$method = strtolower($_SERVER['REQUEST_METHOD']);
 		foreach ($this->{$method} as $uri => $callback) {
 			$oriUri = $uri;
-			$uri = Match::cleanParams($uri);
+			$uri = $this->cleanParams($uri);
 			$result = preg_match("@^".$uri."$@", $this->uri, $params);
 			if($result === 1)
 			{
@@ -143,5 +202,59 @@ class Match extends Builder
 			}
 		}
 		return null;
+	}
+
+	private function getStatusCodeMessage($status)
+	{
+		$codes = Array(
+		    100 => 'Continue',
+		    101 => 'Switching Protocols',
+		    200 => 'OK',
+		    201 => 'Created',
+		    202 => 'Accepted',
+		    203 => 'Non-Authoritative Information',
+		    204 => 'No Content',
+		    205 => 'Reset Content',
+		    206 => 'Partial Content',
+		    300 => 'Multiple Choices',
+		    301 => 'Moved Permanently',
+		    302 => 'Found',
+		    303 => 'See Other',
+		    304 => 'Not Modified',
+		    305 => 'Use Proxy',
+		    306 => '(Unused)',
+		    307 => 'Temporary Redirect',
+		    400 => 'Bad Request',
+		    401 => 'Unauthorized',
+		    402 => 'Payment Required',
+		    403 => 'Forbidden',
+		    404 => 'Not Found',
+		    405 => 'Method Not Allowed',
+		    406 => 'Not Acceptable',
+		    407 => 'Proxy Authentication Required',
+		    408 => 'Request Timeout',
+		    409 => 'Conflict',
+		    410 => 'Gone',
+		    411 => 'Length Required',
+		    412 => 'Precondition Failed',
+		    413 => 'Request Entity Too Large',
+		    414 => 'Request-URI Too Long',
+		    415 => 'Unsupported Media Type',
+		    416 => 'Requested Range Not Satisfiable',
+		    417 => 'Expectation Failed',
+		    500 => 'Internal Server Error',
+		    501 => 'Not Implemented',
+		    502 => 'Bad Gateway',
+		    503 => 'Service Unavailable',
+		    504 => 'Gateway Timeout',
+		    505 => 'HTTP Version Not Supported'
+		);
+		return (isset($codes[$status])) ? $codes[$status] : '';
+	}
+
+	public function fireCode($status = 200)
+	{
+		$status_header = 'HTTP/1.1 ' . $status . ' ' . $this->getStatusCodeMessage($status);
+		header($status_header);
 	}
 }
