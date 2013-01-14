@@ -19,5 +19,9 @@
 		 {
 		 	return !empty($this->__toolbox)? $this->__toolbox : null;
 		 }
+
+		 public function beforeFire() {}
+
+		 public function afterFire() {}
 	}
  ?>

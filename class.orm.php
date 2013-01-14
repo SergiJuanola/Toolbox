@@ -29,7 +29,7 @@ class Orm extends Builder {
 		return $this;
 	}
 
-	public static function query($query, $assoc = false, $levels = 0)
+	public static function query($query, $assoc = true, $levels = 0)
 	{
 		$cursor = mysql_query($query);
 		$items = array();
@@ -72,7 +72,7 @@ class Orm extends Builder {
 		return $this;
 	}
 
-	public function selectAll($where = NULL, $assoc = false, $levels = 0)
+	public function selectAll($where = NULL, $assoc = true, $levels = 0)
 	{
 		$query = "SELECT * FROM ".$this->_tableName;
 		if(!empty($where))
@@ -103,7 +103,39 @@ class Orm extends Builder {
 		return $items;
 	}
 
-	public function selectById($id, $assoc = false, $levels = 0)
+	public function select($where = NULL, $assoc = true, $levels = 0)
+	{
+		$query = "SELECT * FROM ".$this->_tableName;
+		if(!empty($where))
+			$query = $query." WHERE ".$where;
+		$this->_limit == 1;
+		$query .= $this->_orderBy.$this->_limit.$this->_offset;
+		
+		$cursor = mysql_query($query);
+		$items = array();
+		Orm::$_lastError = mysql_error();
+		if(empty(Orm::$_lastError))
+		{
+			while ($item = mysql_fetch_assoc($cursor)) {
+				if($levels > 0)
+				{
+					foreach ($item as $key => $value) {
+						if (strpos($key, "_id") !== FALSE && !empty($item[$key])) {
+							$item[substr($key, 0,-3)] = Orm::table(substr($key, 0,-3))->selectById($value, $assoc, $levels-1); 
+						}
+					}
+				}
+				if($assoc)
+					$items[] = $item;
+				else
+					$items[] = (object)$item;
+			}
+		}
+		Orm::$_lastQuery = $query;
+		return !empty($items)? $items[0] : null;
+	}
+
+	public function selectById($id, $assoc = true, $levels = 0)
 	{
 		$query = "SELECT * FROM ".$this->_tableName." WHERE id=".$id." LIMIT 1";
 		$item = mysql_query($query);

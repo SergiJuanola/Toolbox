@@ -70,13 +70,13 @@ class Vault extends Builder {
 
 	private function needsIV()
 	{
-		$needsIV = mcrypt_get_iv_size($this->algoritm, $this->mode);
+		$needsIV = mcrypt_get_iv_size($this->algorithm, $this->mode);
 		return ($needsIV !== FALSE && $needsIV !== 0);
 	}
 
 	private function getIVLength()
 	{
-		return mcrypt_get_iv_size($this->algoritm, $this->mode);
+		return mcrypt_get_iv_size($this->algorithm, $this->mode);
 	}
 
 	private function generateCongruentIV()

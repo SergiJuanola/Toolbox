@@ -49,6 +49,14 @@ class Session extends Builder implements InputOutput {
 
 	public function connect()
 	{
-		session_start();
+		if(session_id() == '') {
+			session_start();
+		}
+	}
+
+	public function destroy()
+	{
+		$_SESSION = array();
+		session_destroy();
 	}
 }

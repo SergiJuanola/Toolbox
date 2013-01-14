@@ -82,7 +82,9 @@ class Match extends Builder
 			    $params[] = $this->matched['params'][$param->name];
 			}
 			$controller = new $parts[0]($this, $this->hasToolbox()? Toolbox::build() : null);
+			$controller->beforeFire();
 			call_user_func_array(array($controller, $parts[1]), $params);
+			$controller->afterFire();
 		}
 	}
 

@@ -71,6 +71,10 @@ In case you need friendly urls, `Match` is your friend. It is a compact tool for
 
 `Orm`, a really simple database abstraction, lets you operate through your database in a clean, controlled way. Get objects or assoc arrays, to adapt your needs. Use `save()` to decide whether to insert a new row or update an old one. It's as easy as it sounds.
 
+###Marker
+
+`Marker` lets you use Markdown inside your pages. It uses the PHP Markdown & Extra library from [Michel Fortin](http://michelf.com)
+
 ##Setup
 
 Do you want to start a new project with **Toolbox**? In that case, just download the latest copy of Toolbox, uncompress it into a folder (in terms of organisation, it should be stored outside the html accessible folder). For our convenience, we will call this folder `/toolbox`, and we will store one level up from our root.
