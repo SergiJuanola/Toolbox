@@ -9,16 +9,25 @@ class Match extends Builder
 		'post'=>array(),
 		'put'=>array(),
 		'delete'=>array(),
+		'hasLocale'=>FALSE,
+		'defaultLocale'=>NULL,
+		'localeLength'=>2,
 	);
 
 	public static function build($config = array()) {
 		return new self($config);
 	}
 
-	public function get($rule, $callback)
+	private function makeItLocale($uri)
+	{
+		return "/{{__locale:locale}}".$uri;
+	} 
+
+	public function get($uri, $callback)
 	{
 		$get = $this->get;
-		$get[$rule] = $callback;
+		$get[$this->makeItLocale($uri)] = $callback;
+		$get[$uri] = $callback;
 		$this->get = $get;
 		return $this;
 	}
@@ -26,6 +35,7 @@ class Match extends Builder
 	public function post($uri, $callback)
 	{
 		$post = $this->post;
+		$post[$this->makeItLocale($uri)] = $callback;
 		$post[$uri] = $callback;
 		$this->post = $post;
 		return $this;
@@ -34,6 +44,7 @@ class Match extends Builder
 	public function put($uri, $callback)
 	{
 		$put = $this->put;
+		$put[$this->makeItLocale($uri)] = $callback;
 		$put[$uri] = $callback;
 		$this->put = $put;
 		return $this;
@@ -42,6 +53,7 @@ class Match extends Builder
 	public function delete($uri, $callback)
 	{
 		$delete = $this->delete;
+		$delete[$this->makeItLocale($uri)] = $callback;
 		$delete[$uri] = $callback;
 		$this->delete = $delete;
 		return $this;
@@ -72,6 +84,36 @@ class Match extends Builder
 		return $this;
 	}
 
+	public function setHasLocale($hasLocale)
+	{
+		$this->hasLocale = $hasLocale;
+	}
+
+	public function hasLocale()
+	{
+		return $this->hasLocale;
+	}
+
+	public function setDefaultLocale($locale)
+	{
+		$this->defaultLocale = $locale;
+	}
+
+	public function getDefaultLocale()
+	{
+		return $this->defaultLocale;
+	}
+
+	public function setLocaleLength($localeLength)
+	{
+		$this->localeLength = $localeLength;
+	}
+
+	public function getLocaleLength()
+	{
+		return $this->localeLength;
+	}
+
 	private function callController()
 	{
 		$callback = $this->matched['callback'];
@@ -86,6 +128,17 @@ class Match extends Builder
 			    $params[] = $this->matched['params'][$param->name];
 			}
 			$controller = new $parts[0]($this, $this->hasToolbox()? Toolbox::build() : null);
+			if($this->hasLocale)
+			{
+				if(isset($this->matched['params']['__locale']))
+				{
+					$this->locale = $this->matched['params']['__locale'];
+				}
+				else
+				{
+					$this->locale = $this->defaultLocale;
+				}
+			}
 			call_user_func_array(array($controller, $parts[1]), $params);
 		}
 	}
@@ -105,17 +158,19 @@ class Match extends Builder
 		return $this;
 	}
 
-	private static function cleanParams($uri)
+	private function cleanParams($uri)
 	{
 		$find = array(
-			"@{((\w+):int)}@",
-			"@{((\w+):string)}@",
-			"@{((\w+):\w+)}@",
-			"@{((\w+))}@",
+			"@{{((\w+):int)}}@",
+			"@{{((\w+):string)}}@",
+			"@{{((\w+):locale)}}@",
+			"@{{((\w+):\w+)}}@",
+			"@{{((\w+))}}@",
 		);
 		$replace = array(
 			"(?P<\\2>\d+)",
 			"(?P<\\2>\w+)",
+			"(?P<\\2>\w{".$this->localeLength."})",
 			"(?P<\\2>[a-zA-Z0-9\+]+)",
 			"(?P<\\2>[a-zA-Z0-9\+]+)",
 		);
@@ -127,7 +182,7 @@ class Match extends Builder
 		$method = strtolower($_SERVER['REQUEST_METHOD']);
 		foreach ($this->{$method} as $uri => $callback) {
 			$oriUri = $uri;
-			$uri = Match::cleanParams($uri);
+			$uri = $this->cleanParams($uri);
 			$result = preg_match("@^".$uri."$@", $this->uri, $params);
 			if($result === 1)
 			{
