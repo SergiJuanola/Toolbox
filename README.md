@@ -13,7 +13,7 @@ You can create a `Toolbox` instance and add all the libraries you will use. Beca
 
 ###Toolbox can be a library
 
-If you don't want to use Toolbox as a framework, you can still use all the classes independently, by requiring `class.`_**`classname`**_`.php` from within the Toolbox folder. Each class has its own dependencies defined, so you won't have any problem. Plus non of them requires Toolbox to work, so it will never be instanced.
+If you don't want to use Toolbox as a framework, you can still use all the classes independently, by requiring `class.<classname>.php` from within the Toolbox folder. Each class has its own dependencies defined, so you won't have any problem. Plus non of them requires Toolbox to work, so it will never be instanced.
 
 ###Toolbox fits your already created project
 
