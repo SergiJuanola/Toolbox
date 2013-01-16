@@ -49,7 +49,9 @@ class Toolbox {
 		if (!array_key_exists($name, $this->_loaded)) {
 			require_once('class.'.$name.'.php');
 			$class = ucfirst($name);
-			$this->_loaded[$class] = array('default'=>array_merge($class::$default, $default));
+			$reflector = new ReflectionClass($class);
+			$classDefault = $reflector->getStaticPropertyValue('default');
+			$this->_loaded[$class] = array('default'=>array_merge($classDefault, $default));
 		}
 	}
 
