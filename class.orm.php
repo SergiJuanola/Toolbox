@@ -185,12 +185,12 @@ class Orm extends Builder {
 			return Orm::STATUS_ERROR;
 	}
 
-	public function insert($params)
+	public function insert($params, $useId = FALSE)
 	{
 		$query = "INSERT INTO ".$this->_tableName." SET ";
 		$parameters = array();
 		foreach ($params as $key => $value) {
-			if($key != 'id')
+			if($key != 'id' || $useId)
 			{
 				if(!isset($value))
 					$parameters[] = "$key = NULL";
