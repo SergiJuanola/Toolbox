@@ -8,7 +8,8 @@ class Dictionary extends Builder {
 		'match'=>NULL,
 		'dictionaries'=>NULL,
 		'canTranslate'=>FALSE,
-		'__dictionary' => NULL
+		'__dictionary' => NULL,
+		'locale'=>NULL,
 	);
 
 	public static function build($config = array()) {
@@ -20,6 +21,7 @@ class Dictionary extends Builder {
 		else
 		{
 			$locale = empty($dict->match->locale)? $dict->match->getDefaultLocale() : $dict->match->locale;
+			$dict->locale = $locale;
 			$file = $dict->dictionaries.$locale.'.php';
 			if(!file_exists($file))
 			{
@@ -32,6 +34,11 @@ class Dictionary extends Builder {
 			}
 		}
 		return $dict;
+	}
+
+	public function getLocale()
+	{
+		return $this->locale;
 	}
 
 	public function t($sentence)
