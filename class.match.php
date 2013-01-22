@@ -9,6 +9,7 @@ class Match extends Builder
 		'post'=>array(),
 		'put'=>array(),
 		'delete'=>array(),
+		'error'=>NULL,
 		'locales' => array(),
 	);
 
@@ -102,6 +103,12 @@ class Match extends Builder
 		return $this;
 	}
 
+	public function setErrorCallback($callback)
+	{
+		$this->error = $callback;
+		return $this;
+	}
+
 	public function fire()
 	{
 		$matchedUri = $this->basePath()->cleanUri()->matchUri();
@@ -112,7 +119,13 @@ class Match extends Builder
 		}
 		else
 		{
-			//$this->fireCode(404);
+			$this->matched = array(
+									'method' => 'unknown',
+									'rule' => NULL,
+									'regex' => NULL,
+									'callback' => NULL,
+									'params'=> array());
+			$this->fireCode(404);
 		}
 		return $this;
 	}
@@ -282,9 +295,21 @@ class Match extends Builder
 		return (isset($codes[$status])) ? $codes[$status] : '';
 	}
 
-	public function fireCode($status = 200)
+	public function fireCode($status = 200, $notCatch = FALSE)
 	{
 		$status_header = 'HTTP/1.1 ' . $status . ' ' . $this->getStatusCodeMessage($status);
 		header($status_header);
+		if($notCatch === FALSE && !empty($this->error))
+		{
+			$matched = $this->matched;
+			$this->matched = array(
+									'method' => $matched['method'],
+									'rule' => '/error',
+									'regex' => '/error',
+									'callback' => $this->error,
+									'params'=> array('code'=>$status, 'origin'=>$matched));
+			$this->callController();
+			die();
+		}
 	}
 }
