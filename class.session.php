@@ -54,9 +54,19 @@ class Session extends Builder implements InputOutput {
 		}
 	}
 
+	public function disconnect()
+	{
+		session_write_close();
+	}
+
 	public function destroy()
 	{
 		$_SESSION = array();
 		session_destroy();
+	}
+
+	public function __destruct()
+	{
+		$this->disconnect();
 	}
 }
