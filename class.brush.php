@@ -3,7 +3,10 @@
 require_once 'class.builder.php';
 
 class Brush extends Builder {
-	public static $default = array();
+	public static $default = array(
+		'match'=>NULL,
+		'layout'=>NULL,
+	);
 
 	public static function build($config = array()) {
 		return new self($config);
@@ -12,11 +15,20 @@ class Brush extends Builder {
 	public function setMatch($match)
 	{
 		$this->match = $match;
+		return $this;
 	}
 
 	public function getMatch($match)
 	{
 		return $this->match;
+	}
+
+	public function url($url, $locale = FALSE)
+	{
+		if(empty($this->match))
+			return $url;
+		else
+			return $this->match->url($url, $locale);
 	}
 
 	public function render($view, $params = array(), $partial = FALSE, $return = FALSE)

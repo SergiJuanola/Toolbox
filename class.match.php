@@ -11,6 +11,7 @@ class Match extends Builder
 		'delete'=>array(),
 		'error'=>NULL,
 		'locales' => array(),
+		'localeUris' => array(),
 	);
 
 	public static function build($config = array()) {
@@ -39,7 +40,14 @@ class Match extends Builder
 		if($this->hasLocale())
 		{
 			if($includesLocale)
-				$get[$this->includesLocale($uri)] = $callback;
+			{
+				foreach ($includesLocale as $locale => $localeUri) {
+					$get[$this->includesLocale($localeUri)] = $callback;
+				}
+				$localeUris = $this->localeUris;
+				$localeUris[$uri] = $includesLocale;
+				$this->localeUris = $localeUris;
+			}
 			else
 				$get[$this->makeItLocale($uri)] = $callback;
 		}
@@ -54,7 +62,14 @@ class Match extends Builder
 		if($this->hasLocale())
 		{
 			if($includesLocale)
-				$post[$this->includesLocale($uri)] = $callback;
+			{
+				foreach ($includesLocale as $locale => $localeUri) {
+					$post[$this->includesLocale($localeUri)] = $callback;
+				}
+				$localeUris = $this->localeUris;
+				$localeUris[$uri] = $includesLocale;
+				$this->localeUris = $localeUris;
+			}
 			else
 				$post[$this->makeItLocale($uri)] = $callback;
 		}
@@ -69,7 +84,14 @@ class Match extends Builder
 		if($this->hasLocale())
 		{
 			if($includesLocale)
-				$put[$this->includesLocale($uri)] = $callback;
+			{
+				foreach ($includesLocale as $locale => $localeUri) {
+					$put[$this->includesLocale($localeUri)] = $callback;
+				}
+				$localeUris = $this->localeUris;
+				$localeUris[$uri] = $includesLocale;
+				$this->localeUris = $localeUris;
+			}
 			else
 				$put[$this->makeItLocale($uri)] = $callback;
 		}
@@ -84,7 +106,14 @@ class Match extends Builder
 		if($this->hasLocale())
 		{
 			if($includesLocale)
-				$delete[$this->includesLocale($uri)] = $callback;
+			{
+				foreach ($includesLocale as $locale => $localeUri) {
+					$delete[$this->includesLocale($localeUri)] = $callback;
+				}
+				$localeUris = $this->localeUris;
+				$localeUris[$uri] = $includesLocale;
+				$this->localeUris = $localeUris;
+			}
 			else
 				$delete[$this->makeItLocale($uri)] = $callback;
 		}
@@ -203,6 +232,13 @@ class Match extends Builder
 		return $this;
 	}
 
+	public function getLocale()
+	{
+		if(!empty($this->locale) && in_array($this->locale, $this->locales))
+			return $this->locale;
+		return $this->getDefaultLocale();
+	}
+
 	private function cleanParams($uri)
 	{
 		$find = array(
@@ -311,5 +347,20 @@ class Match extends Builder
 			$this->callController();
 			die();
 		}
+	}
+
+	public function url($url, $locale = FALSE)
+	{
+		if($locale === FALSE)
+		{
+			$locale = $this->getLocale();
+		}
+		if(!in_array($locale, $this->locales))
+			return $url;
+		if(!array_key_exists($url, $this->localeUris))
+			return $url;
+		if(!array_key_exists($locale, $this->localeUris[$url]))
+			return $url;
+		return $this->localeUris[$url][$locale];
 	}
 }
