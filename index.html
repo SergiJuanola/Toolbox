@@ -1,0 +1,185 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Toolbox by Korcholis</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/Korcholis/Toolbox">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/Korcholis/Toolbox/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/Korcholis/Toolbox/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Toolbox</h1>
+          <p>Toolbox is a ready to use framework for PHP 5.2</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/Korcholis">Korcholis</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>Toolbox</h1>
+
+<p>Toolbox is a pico-framework ready to use. It acts as both a framework (url matching, session / database handling...) or as a set of really useful and ready to use classes.</p>
+
+<p>With Toolbox, you can create a website really fast, putting all your configuration inside a file.</p>
+
+<h2>Features</h2>
+
+<h3>Toolbox is modular</h3>
+
+<p>You can create a <code>Toolbox</code> instance and add all the libraries you will use. Because of this, you <strong>don't</strong> need to add all the classes, just the ones you will need. Toolbox then handles all the default configurations you need.</p>
+
+<h3>Toolbox can be a library</h3>
+
+<p>If you don't want to use Toolbox as a framework, you can still use all the classes independently, by requiring <code>class.&lt;classname&gt;.php</code> from within the Toolbox folder. Each class has its own dependencies defined, so you won't have any problem. Plus non of them requires Toolbox to work, so it will never be instanced.</p>
+
+<h3>Toolbox fits your already created project</h3>
+
+<p>Because Toolbox is not tight to a structure, it can sit next to another framework, perfectly fit with your already created project, making it even more awesome!</p>
+
+<h3>Toolbox is easy to use</h3>
+
+<p>The Toolbox main motto is <em>"method chaining is simple as hell"</em>, and that's why every class in Toolbox uses this principle. Also, they all have a static method called <code>build()</code>. It sets the default values to the class without a hassle and returns an instance of itself, making an instance creation a breeze:</p>
+
+<pre><code>Dice::build()-&gt;setMin(1)-&gt;setMax(6)-&gt;roll();
+</code></pre>
+
+<h3>Toolbox's Match enlightens your websites</h3>
+
+<p>The Uri Matcher called <code>Match</code> has a very easy and compact structure:</p>
+
+<pre><code>$match = Match::build()
+-&gt;get('/user/{userid:int}', 'User::viewById')
+-&gt;get('/user/{user:string}', 'User::viewByName')
+-&gt;get('/user/{user}', 'User::view')
+-&gt;get('/user', 'User::showProfile')
+-&gt;post('/user/{user:int}', 'User::editUser')
+-&gt;post('/user', 'User::newUser')
+-&gt;matchAny('/', 'Home::index')
+-&gt;fire();
+</code></pre>
+
+<h2>Tools</h2>
+
+<p>Toolbox includes a lot of useful tools and examples of classes you can use to create your own ones. The most important ones are:</p>
+
+<h3>Dice</h3>
+
+<p><code>Dice</code> works just like a regular dice. With <code>Dice</code> you can create a randomizer from a number to another and roll it as much as you want. It will pop random integer numbers, and even skip some of them by defining a <code>step</code>.</p>
+
+<h3>Vault</h3>
+
+<p><code>Vault</code> grabs your information and converts it into something really secure. It uses by default the 256-bit AES Encryption, so it is virtually impossible to break.</p>
+
+<h3>Keychain</h3>
+
+<p><code>Keychain</code> is your perfect tool as a Software company. It is able to generate any kind of serial number you want to use. It also checks for other serials you try, if they meet your requirements. However, the possibilities are endless, as you can define unique identifiers for your users, instead of the classic ID.</p>
+
+<h3>Session</h3>
+
+<p><code>Session</code> is a better way to use sessions in PHP. It lets you get and set parameters, using default values if they aren't set.</p>
+
+<h3>Match</h3>
+
+<p>In case you need friendly urls, <code>Match</code> is your friend. It is a compact tool for url matching. It lets your <code>index.php</code> file really clean and small, as it gets the right methods from within independent classes, stored in a folder, wisely referred to as <code>matchbox</code>. These classes need to extend <code>Controller</code>.</p>
+
+<h3>Brush</h3>
+
+<p><code>Brush</code> is a really simple rendering class. It is as simple as it can, actually. You can define a layout for every brush or use one by default, and then just hit <code>paint()</code>. Due to the extended use of <code>render()</code> named methods, it is an alias for <code>paint()</code>.</p>
+
+<h3>Orm</h3>
+
+<p><code>Orm</code>, a really simple database abstraction, lets you operate through your database in a clean, controlled way. Get objects or assoc arrays, to adapt your needs. Use <code>save()</code> to decide whether to insert a new row or update an old one. It's as easy as it sounds.</p>
+
+<h3>Marker</h3>
+
+<p><code>Marker</code> lets you use Markdown inside your pages. It uses the PHP Markdown &amp; Extra library from <a href="http://michelf.com">Michel Fortin</a></p>
+
+<h2>Setup</h2>
+
+<p>Do you want to start a new project with <strong>Toolbox</strong>? In that case, just download the latest copy of Toolbox, uncompress it into a folder (in terms of organisation, it should be stored outside the html accessible folder). For our convenience, we will call this folder <code>/toolbox</code>, and we will store one level up from our root.</p>
+
+<p>Open your website root and write the following in an index.php file:</p>
+
+<pre><code>&lt;?php 
+require_once '../toolbox/class.toolbox.php';
+
+$app = Toolbox::build(array(
+    'match'     =&gt;  array(
+                        'matchbox'  =&gt;  __DIR__.'/matchbox/'
+                    ),
+    'brush'     =&gt;  array(
+                        'views' =&gt;  __DIR__.'/views/',
+                        'layout' =&gt; 'layout.php',
+                    )
+));
+</code></pre>
+
+<p>This creates a brand new entry point with all you need to create a friendly url website with templates. You should also create an .htaccess to redirect everything to index.php:</p>
+
+<pre><code>RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.php
+</code></pre>
+
+<p>Then, you can create a <code>Match</code> instance to start url matching:</p>
+
+<pre><code>&lt;?php
+// following index.php...
+$match = Match::build()
+-&gt;matchAny('/', 'Home::index')
+-&gt;fire();
+</code></pre>
+
+<p>In this case, we are matching the home screen, and sending its request to the <code>HomeController</code>, which is saved inside <code>/matchbox</code>. Then, we call <code>index()</code> within <code>HomeController</code>. This is an example of <code>controller.home.php</code>, hosted inside <code>/matchbox</code>, and holding only a method:</p>
+
+<pre><code>&lt;?php 
+
+require_once('../toolbox/class.controller.php');
+
+class HomeController extends Controller {
+    public function index()
+    {
+        Brush::build()-&gt;paint('home.php', array('var1'=&gt;'val1'));
+    }
+}
+</code></pre>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-33342294-2");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
