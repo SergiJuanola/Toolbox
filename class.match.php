@@ -52,7 +52,8 @@ class Match extends Builder
 			else
 				$get[$this->makeItLocale($uri)] = $callback;
 		}
-		$get[$uri] = $callback;
+		else
+			$get[$uri] = $callback;
 		$this->get = $get;
 		return $this;
 	}
@@ -74,7 +75,8 @@ class Match extends Builder
 			else
 				$post[$this->makeItLocale($uri)] = $callback;
 		}
-		$post[$uri] = $callback;
+		else
+			$post[$uri] = $callback;
 		$this->post = $post;
 		return $this;
 	}
@@ -96,7 +98,8 @@ class Match extends Builder
 			else
 				$put[$this->makeItLocale($uri)] = $callback;
 		}
-		$put[$uri] = $callback;
+		else
+			$put[$uri] = $callback;
 		$this->put = $put;
 		return $this;
 	}
@@ -118,7 +121,8 @@ class Match extends Builder
 			else
 				$delete[$this->makeItLocale($uri)] = $callback;
 		}
-		$delete[$uri] = $callback;
+		else
+			$delete[$uri] = $callback;
 		$this->delete = $delete;
 		return $this;
 	}
@@ -246,17 +250,19 @@ class Match extends Builder
 	{
 		$find = array(
 			"@{{((\w+):int)}}@",
-			"@{{((\w+):string)}}@",
 			"@{{((\w+):locale)}}@",
+			"@{{((\w+):slug)}}@",
+			"@{{((\w+):string)}}@",
 			"@{{((\w+):\w+)}}@",
 			"@{{((\w+))}}@",
 		);
 		$replace = array(
 			"(?P<\\2>\d+)",
-			"(?P<\\2>\w+)",
 			"(?P<\\2>\w{".$this->getLocaleLength()."})",
-			"(?P<\\2>[a-zA-Z0-9\+]+)",
-			"(?P<\\2>[a-zA-Z0-9\+]+)",
+			"(?P<\\2>[a-zA-Z0-9\+-_]+)",
+			"(?P<\\2>\w+)",
+			"(?P<\\2>\w+)",
+			"(?P<\\2>[a-zA-Z0-9\+-_]+)",
 		);
 		return preg_replace($find, $replace, $uri);
 	}
