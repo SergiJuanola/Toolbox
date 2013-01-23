@@ -372,6 +372,8 @@ class Match extends Builder
 
 	public function url($url, $locale = FALSE)
 	{
+		if(empty($url))
+			$url = "/";
 		if($locale === FALSE)
 		{
 			$locale = $this->getLocale();
