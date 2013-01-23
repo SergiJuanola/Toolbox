@@ -31,6 +31,13 @@ class Brush extends Builder {
 			return $this->match->url($url, $locale);
 	}
 
+	public function getCurrentUrlLocalized($locale)
+	{
+		if(empty($this->match))
+			return FALSE;
+		return $this->url($this->match->matched['alias'], $locale);
+	}
+
 	public function render($view, $params = array(), $partial = FALSE, $return = FALSE)
 	{
 		foreach ( $params as $key => $value )

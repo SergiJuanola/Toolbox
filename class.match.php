@@ -150,6 +150,8 @@ class Match extends Builder
 		{
 			$this->matched = array(
 									'method' => 'unknown',
+									'uri' => $this->uri,
+									'alias' => $this->getUriAlias(),
 									'rule' => NULL,
 									'regex' => NULL,
 									'callback' => NULL,
@@ -274,6 +276,8 @@ class Match extends Builder
 				} 
 				return array(
 								'method' => $method,
+								'uri' => $this->uri,
+								'alias' => $this->getUriAlias(),
 								'rule' => $oriUri,
 								'regex' => $uri,
 								'callback' => $callback,
@@ -340,6 +344,8 @@ class Match extends Builder
 			$matched = $this->matched;
 			$this->matched = array(
 									'method' => $matched['method'],
+									'uri' => $this->uri,
+									'alias' => $this->getUriAlias(),
 									'rule' => '/error',
 									'regex' => '/error',
 									'callback' => $this->error,
@@ -347,6 +353,17 @@ class Match extends Builder
 			$this->callController();
 			die();
 		}
+	}
+
+	private function getUriAlias()
+	{
+		$localeUris = $this->localeUris;
+		foreach ($localeUris as $alias => $uris) {
+			if (in_array($this->uri, $uris)) {
+				return $alias;
+			}
+		}
+		return $this->uri;
 	}
 
 	public function url($url, $locale = FALSE)
