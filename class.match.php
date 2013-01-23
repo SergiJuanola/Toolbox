@@ -369,8 +369,19 @@ class Match extends Builder
 
 		$localeUris = $this->localeUris;
 		foreach ($localeUris as $alias => $uris) {
-			if (in_array($this->uri, $uris)) {
-				return $alias;
+			foreach ($uris as $locale => $localeUri) {
+				$localeUri = $this->cleanParams($localeUri);
+				$result = preg_match("@^".$localeUri."$@", $this->uri, $params);
+				if($result == 1)
+				{
+					$paramFind = array();
+					$paramReplace = array();
+					foreach ($params as $key => $value) {
+						$paramFind[] = "@{{".$key."(:\w+)?}}@";
+						$paramReplace[] = $value;
+					}
+					return preg_replace($paramFind, $paramReplace, $alias);
+				}
 			}
 		}
 		return substr($this->uri, 3);
