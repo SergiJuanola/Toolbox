@@ -386,10 +386,25 @@ class Match extends Builder
 		}
 		if(!in_array($locale, $this->locales))
 			return $url;
-		if(!array_key_exists($url, $this->localeUris))
-			return "/".$locale.$url;
-		if(!array_key_exists($locale, $this->localeUris[$url]))
-			return "/".$locale.$url;
-		return $this->localeUris[$url][$locale];
+
+		foreach ($this->localeUris as $localeUri => $localeUris) {
+			$localeUri = $this->cleanParams($localeUri);
+			$result = preg_match("@^".$localeUri."$@", $url, $params);
+			if($result==1)
+			{
+				if(array_key_exists($locale, $localeUris))
+				{
+					$localizedUri = $localeUris[$locale];
+					$paramFind = array();
+					$paramReplace = array();
+					foreach ($params as $key => $value) {
+						$paramFind[] = "@{{".$key."(:\w+)?}}@";
+						$paramReplace[] = $value;
+					}
+					return preg_replace($paramFind, $paramReplace, $localizedUri);
+				}
+			}
+		}
+		return "/".$locale.$url;
 	}
 }
