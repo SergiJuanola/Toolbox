@@ -1,9 +1,9 @@
 Toolbox
 =======
 
-Toolbox is a pico-framework ready to use. It acts as both a framework (url matching, session / database handling...) or as a set of really useful and ready to use classes.
+Toolbox is a pico-framework ready to use. It acts as both a framework (url matching, session / database handling...) or as a set of really useful and simple classes.
 
-With Toolbox, you can create a website really fast, putting all your configuration inside a file.
+With Toolbox, you can create a website really fast, putting all your configuration inside a file. 
 
 ##Features
 
@@ -39,6 +39,68 @@ The Uri Matcher called `Match` has a very easy and compact structure:
 	->matchAny('/', 'Home::index')
 	->fire();
 
+###Toolbox loves multilanguage websites
+
+Toolbox is really loose, but there is one thing that Match, Brush and Dictionary love to do really tight: localize websites. Match lets you decide whether your site is single or multilanguage, and when your urls are common for every language or they should be different for every language.
+
+Brush is able to connect to Match and get the urls translated in every language.
+
+Dictionary lets you translate texts using files for other locales.
+
+	/*
+		The 'locales' item in 'match' configuration lets you
+		add as many locales as you need. The first one will 
+		be the default one. Once you add any locale in the 
+		array, Match sets the url matching as multilanguage.
+
+		Dictionary needs the directory for the dictionary
+		files. They need to be named as the locale and with
+		a .php extension.
+	*/
+
+	$app = Toolbox::build(array(
+		'match'=>array(
+			'matchbox' => __DIR__.'/matchbox/',
+			'locales'=>array(
+				'es',
+				'en',
+			)
+		),
+		'brush'=>array(
+			'views'=>__DIR__.'/views/',
+			'layout'=>'layout.php',
+		),
+		'dictionary'=>array(
+			'dictionaries'=>__DIR__.'/dictionaries/',
+		),
+	));
+
+	/*
+		Match commands can get two parameters, if the specified
+		URI is common in every language (like /data or /) or
+		three parameters, meaning the third an array of URIs,
+		one per locale, without the locale reference. In this
+		case, The index / will be the same for each locale,
+		finally being represented by /es/ and /en/, depending
+		on the language. However, the last rule will apply to
+		/es/sobre-nosotros and /en/about-us and both will call
+		Home::about action. In this case, /sobre-nosotros will
+		be used as an alias, in case we want to link to this
+		URI in a localized way. If we write in a layout/view
+		$this->url('/sobre-nosotros'), it will return us the
+		localised link to this alias.
+	*/
+
+	$match = Match::build()
+	->post('/data', 'Webservice::postData')
+	->get('/', 'Home::index')
+	->get('/sobre-nosotros', 'Home::about', array(	
+			'es' => '/sobre-nosotros',
+			'en' => '/about-us',
+		)
+	)
+	->fire();
+
 ##Tools
 
 Toolbox includes a lot of useful tools and examples of classes you can use to create your own ones. The most important ones are:
@@ -70,6 +132,14 @@ In case you need friendly urls, `Match` is your friend. It is a compact tool for
 ###Orm
 
 `Orm`, a really simple database abstraction, lets you operate through your database in a clean, controlled way. Get objects or assoc arrays, to adapt your needs. Use `save()` to decide whether to insert a new row or update an old one. It's as easy as it sounds.
+
+###Dictionary
+
+`Dictionary` is your best friend if your website is multilanguage. It will let you store any text that needs to be translated in a single file, and then call something like this:
+
+    Dictionary::build()->t('About us', 'es');
+
+, popping a message in the selected locale ('es') or writing back About us if you haven't translated it yet. In case you don't choose to write a locale, and you have linked your `Match` instance to `Dictionary`, you can just let it automagically choose the locale for you.
 
 ###Marker
 
