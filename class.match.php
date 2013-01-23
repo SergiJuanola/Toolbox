@@ -358,13 +358,16 @@ class Match extends Builder
 
 	private function getUriAlias()
 	{
+		if(!$this->hasLocale())
+			return $this->uri;
+
 		$localeUris = $this->localeUris;
 		foreach ($localeUris as $alias => $uris) {
 			if (in_array($this->uri, $uris)) {
 				return $alias;
 			}
 		}
-		return $this->uri;
+		return substr($this->uri, 3);
 	}
 
 	public function url($url, $locale = FALSE)
@@ -376,9 +379,9 @@ class Match extends Builder
 		if(!in_array($locale, $this->locales))
 			return $url;
 		if(!array_key_exists($url, $this->localeUris))
-			return $url;
+			return "/".$locale.$url;
 		if(!array_key_exists($locale, $this->localeUris[$url]))
-			return $url;
+			return "/".$locale.$url;
 		return $this->localeUris[$url][$locale];
 	}
 }
