@@ -50,7 +50,10 @@ class Match extends Builder
 				$this->localeUris = $localeUris;
 			}
 			else
+			{
 				$get[$this->makeItLocale($uri)] = $callback;
+				$get[$uri] = $callback;
+			}
 		}
 		else
 			$get[$uri] = $callback;
@@ -73,7 +76,10 @@ class Match extends Builder
 				$this->localeUris = $localeUris;
 			}
 			else
+			{
 				$post[$this->makeItLocale($uri)] = $callback;
+				$post[$uri] = $callback;
+			}
 		}
 		else
 			$post[$uri] = $callback;
@@ -96,7 +102,10 @@ class Match extends Builder
 				$this->localeUris = $localeUris;
 			}
 			else
+			{
 				$put[$this->makeItLocale($uri)] = $callback;
+				$put[$uri] = $callback;
+			}
 		}
 		else
 			$put[$uri] = $callback;
@@ -119,7 +128,10 @@ class Match extends Builder
 				$this->localeUris = $localeUris;
 			}
 			else
+			{
 				$delete[$this->makeItLocale($uri)] = $callback;
+				$delete[$uri] = $callback;
+			}
 		}
 		else
 			$delete[$uri] = $callback;
