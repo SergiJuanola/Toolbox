@@ -7,13 +7,16 @@ require_once 'class.builder.php';
 *
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @version	1.0
+* @version	0.5
 * @see Builder
 */
 class Brush extends Builder {
 
 	/**
-	* Default properties
+	* Default properties.
+	* @param Match $match The desired $match
+	* @param string $views The folder where the views are stored. End if with '/'
+	* @param string $layout The layout being used. If set to NULL, no layout is used
 	*/
 	public static $default = array(
 		'match'=>NULL,
