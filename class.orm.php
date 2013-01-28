@@ -20,6 +20,7 @@ class Orm extends Builder {
 	public function connect()
 	{
 		$this->_connection = mysql_connect($this->host, $this->user, $this->pass);
+		mysql_query("SET NAMES utf8");
 		mysql_select_db($this->db);
 	}
 
