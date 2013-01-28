@@ -49,9 +49,12 @@ class Match extends Builder
 				foreach ($includesLocale as $locale => &$localeUri) {
 					$get[$this->includesLocale($localeUri, $locale)] = $callback;
 				}
-				$localeUris = $this->localeUris;
-				$localeUris[$uri] = $includesLocale;
-				$this->localeUris = $localeUris;
+				if(!isset($this->localeUris[$uri]))
+				{
+					$localeUris = $this->localeUris;
+					$localeUris[$uri] = $includesLocale;
+					$this->localeUris = $localeUris;
+				}
 			}
 			else
 			{
@@ -75,9 +78,12 @@ class Match extends Builder
 				foreach ($includesLocale as $locale => $localeUri) {
 					$post[$this->includesLocale($localeUri, $locale)] = $callback;
 				}
-				$localeUris = $this->localeUris;
-				$localeUris[$uri] = $includesLocale;
-				$this->localeUris = $localeUris;
+				if(!isset($this->localeUris[$uri]))
+				{
+					$localeUris = $this->localeUris;
+					$localeUris[$uri] = $includesLocale;
+					$this->localeUris = $localeUris;
+				}
 			}
 			else
 			{
@@ -101,9 +107,12 @@ class Match extends Builder
 				foreach ($includesLocale as $locale => $localeUri) {
 					$put[$this->includesLocale($localeUri, $locale)] = $callback;
 				}
-				$localeUris = $this->localeUris;
-				$localeUris[$uri] = $includesLocale;
-				$this->localeUris = $localeUris;
+				if(!isset($this->localeUris[$uri]))
+				{
+					$localeUris = $this->localeUris;
+					$localeUris[$uri] = $includesLocale;
+					$this->localeUris = $localeUris;
+				}
 			}
 			else
 			{
@@ -127,9 +136,12 @@ class Match extends Builder
 				foreach ($includesLocale as $locale => $localeUri) {
 					$delete[$this->includesLocale($localeUri, $locale)] = $callback;
 				}
-				$localeUris = $this->localeUris;
-				$localeUris[$uri] = $includesLocale;
-				$this->localeUris = $localeUris;
+				if(!isset($this->localeUris[$uri]))
+				{
+					$localeUris = $this->localeUris;
+					$localeUris[$uri] = $includesLocale;
+					$this->localeUris = $localeUris;
+				}
 			}
 			else
 			{
