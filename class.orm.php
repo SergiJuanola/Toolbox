@@ -1,4 +1,8 @@
 <?php
+/**
+ * Tool for Toolbox
+ * @package Toolbox
+ */
 
 require_once 'class.builder.php';
 

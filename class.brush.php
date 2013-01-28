@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Tool for Toolbox
+ * @package Toolbox
+ */
 require_once 'class.builder.php';
 
 /**
@@ -7,13 +10,16 @@ require_once 'class.builder.php';
 *
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @version	1.0
+* @version	0.5
 * @see Builder
 */
 class Brush extends Builder {
 
 	/**
-	* Default properties
+	* Default properties.
+	* @param Match $match The desired $match
+	* @param string $views The folder where the views are stored. End if with '/'
+	* @param string $layout The layout being used. If set to NULL, no layout is used
 	*/
 	public static $default = array(
 		'match'=>NULL,
@@ -22,6 +28,8 @@ class Brush extends Builder {
 
 	/**
 	* Building method
+	* @param array $config The config array
+	* @return Brush An instance of itself
 	* @see Builder::build()
 	*/
 	public static function build($config = array()) {
@@ -31,6 +39,7 @@ class Brush extends Builder {
 	/**
 	* Saves an instance of Match
 	* @param Match $match The desired $match
+	* @return Brush An instance of itself
 	* @see Match, Brush::getMatch($match)
 	*/
 	public function setMatch($match)
@@ -88,6 +97,7 @@ class Brush extends Builder {
 	* @param array $params The list of parameters being passed to the view and layout
 	* @param boolean $partial TRUE if the view doesn't need layout, FALSE otherwise. Defaults to FALSE
 	* @param boolean $return TRUE if the view needs to be returned, FALSE if it needs to be echoed. Defaults to FALSE
+	* @return mixed The rendered view if $return is TRUE, or returns TRUE otherwise
 	*/
 	public function render($view, $params = array(), $partial = FALSE, $return = FALSE)
 	{
@@ -116,7 +126,11 @@ class Brush extends Builder {
 	
 	/**
 	* Alias of render()
-	* 
+	* @param string $view The view you want to render
+	* @param array $params The list of parameters being passed to the view and layout
+	* @param boolean $partial TRUE if the view doesn't need layout, FALSE otherwise. Defaults to FALSE
+	* @param boolean $return TRUE if the view needs to be returned, FALSE if it needs to be echoed. Defaults to FALSE
+	* @return mixed The rendered view if $return is TRUE, or returns TRUE otherwise
 	* @see Brush::render()
 	*/
 	public function paint($view, $params = array(), $partial = FALSE, $return = FALSE)

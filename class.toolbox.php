@@ -1,4 +1,8 @@
 <?php 
+/**
+ * Tool for Toolbox
+ * @package Toolbox
+ */
 
 class Toolbox {
 	protected $_config = array();
