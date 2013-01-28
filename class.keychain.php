@@ -1,8 +1,27 @@
 <?php 
+/**
+ * Tool for Toolbox
+ * @package Toolbox
+ */
 
 require_once 'class.builder.php';
 
+/**
+* Alphanum code generator
+*
+* @author 	Sergi Juanola 
+* @copyright	Sergi Juanola 2012-2013
+* @version	0.5
+* @see Builder
+*/
 class Keychain extends Builder {
+
+	/**
+	* Default properties.
+	* @param string $format The current format for the code generation
+	* @param string $salt The salt used to generate codes
+	* @param array $__sets Array that stores all the sets used to generate codes.
+	*/
 	public static $default = array(
 		'format' 	=> '^######',
 		'salt'		=> '',
@@ -13,10 +32,22 @@ class Keychain extends Builder {
 						),
 	);
 
+	/**
+	* Building method
+	* @param array $config The config array
+	* @return Keychain An instance of itself
+	* @see Builder::build()
+	*/
 	public static function build($config = array()) {
 		return new self($config);
 	}
 
+	/**
+	 * Adds a set for code generation
+	 * @param string $name The set's name
+	 * @param string $set The set's available characters. They should be concatenated in a string.
+	 * @return Keychain An instance of itself
+	 */
 	public function addSet($name, $set)
 	{
 		$sets = $this->__sets;
@@ -25,10 +56,20 @@ class Keychain extends Builder {
 		return $this;
 	}
 
+	/**
+	 * Gets the current format for this instance
+	 * @return string $format The current format
+	 */
 	public function getFormat()
 	{
 		return $this->format;
 	}
+
+	/**
+	 * Sets another format for this instance
+	 * @param string $thisFormat The new format
+	 * @return Keychain An instance of itself
+	 */
 	public function setFormat($thisFormat)
 	{
 		$this->format = $thisFormat;
@@ -36,6 +77,8 @@ class Keychain extends Builder {
 	}
 
 	/**
+	 * Generates a new alphanumeric code, according to the current format
+	 *
 	 *	Symbology:
 	 *	#: Number
 	 *	_: Lowercase letter
@@ -44,8 +87,9 @@ class Keychain extends Builder {
 	 *	%: Number or Uppercase letter
 	 *	$: Number, Uppercase or Lowercase letter
 	 *	{setname}: Any of the elements in setname
-	 **/
-
+	 * @return A new code
+	 * @see Keychain::batchGenerate($amount)
+	 */
 	public function generate()
 	{
 		$key = "";
@@ -86,6 +130,12 @@ class Keychain extends Builder {
 		return $key;
 	}
 
+	/**
+	 * Generate an amount of alphanumeric codes
+	 * @param integer $amount 
+	 * @return array The array of generated codes
+	 * @see Keychain::generate()
+	 */
 	public function batchGenerate($amount)
 	{
 		$keys = array();
@@ -95,12 +145,23 @@ class Keychain extends Builder {
 		return $keys;
 	}
 
+	/**
+	 * Checks if a code can be generated with the current format
+	 * @param string $key The key to be checked
+	 * @return boolean TRUE if $key can be generated, FALSE otherwise
+	 * @see Keychain::generateRegex()
+	 */
 	public function isValid($key)
 	{
 		$regex = $this->generateRegex();
 		return preg_match($regex, $key) == 1;
 	}
 
+	/**
+	 * Generates a regex for the current format, so it can be checked with isValid
+	 * @return string The generated regex
+	 * @see Keychain::isValid()
+	 */
 	private function generateRegex()
 	{
 		$regex = "/^";
