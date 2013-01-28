@@ -262,24 +262,29 @@ class Match extends Builder
 		return $this->getDefaultLocale();
 	}
 
-	private function cleanParams($uri)
+	private function cleanParams($uri, $strict = TRUE)
 	{
 		$find = array(
+			"@{{((\w+):slug)}}@",
 			"@{{((\w+):int)}}@",
 			"@{{((\w+):locale)}}@",
-			"@{{((\w+):slug)}}@",
 			"@{{((\w+):string)}}@",
 			"@{{((\w+):\w+)}}@",
 			"@{{((\w+))}}@",
 		);
 		$replace = array(
+			"(?P<\\2>[a-zA-Z0-9\+-_]+)",
 			"(?P<\\2>\d+)",
 			"(?P<\\2>\w{".$this->getLocaleLength()."})",
-			"(?P<\\2>[a-zA-Z0-9\+-_]+)",
 			"(?P<\\2>\w+)",
 			"(?P<\\2>\w+)",
 			"(?P<\\2>[a-zA-Z0-9\+-_]+)",
 		);
+
+		if($strict === FALSE) // If strict is false, accept anything from some types
+		{
+			$replace[0] = "(?P<\\2>.+)"; //slug
+		}
 		return preg_replace($find, $replace, $uri);
 	}
 
@@ -415,8 +420,9 @@ class Match extends Builder
 			return $url;
 
 		foreach ($this->localeUris as $localeUri => $localeUris) {
-			$localeUri = $this->cleanParams($localeUri);
+			$localeUri = $this->cleanParams($localeUri, FALSE);
 			$result = preg_match("@^".$localeUri."$@", $url, $params);
+			$callback = new MatchCallbacks($this, $params);
 			if($result==1)
 			{
 				if(array_key_exists($locale, $localeUris))
@@ -425,13 +431,49 @@ class Match extends Builder
 					$paramFind = array();
 					$paramReplace = array();
 					foreach ($params as $key => $value) {
-						$paramFind[] = "@{{".$key."(:\w+)?}}@";
+						$paramFind[] = "@{{(".$key.")(:(\w+))?}}@";
 						$paramReplace[] = $value;
 					}
-					return preg_replace($paramFind, $paramReplace, $localizedUri);
+					//return preg_replace($paramFind, $paramReplace, $localizedUri);
+					return preg_replace_callback($paramFind, array($callback, "urlPregCallback"), $localizedUri);
 				}
 			}
 		}
 		return "/".$locale.$url;
+	}
+
+	public function slug($str)
+	{
+		$strnew=strtolower($str);
+		$strnew = str_replace( array('à','á','â','ã','ä', 'ç',
+				'è','é','ê','ë', 'ì','í','î','ï', 'ñ', 'ò','ó','ô','õ','ö',
+				'ù','ú','û','ü', 'ý','ÿ'),
+				array('a','a','a','a','a', 'c', 'e','e','e','e', 'i','i','i','i', 'n',
+						'o','o','o','o','o', 'u','u','u','u', 'y','y'), $strnew);
+		$strnew = preg_replace('~[^\\pL\d]+~u', '-', $strnew);
+		$strnew = trim($strnew, '-');
+		$strnew = preg_replace('~[^-\w]+~', '', $strnew);
+	
+		return $strnew;
+	}
+}
+
+class MatchCallbacks
+{
+	private $params;
+	private $match;
+
+	public function __construct($match, $params)
+	{
+		$this->match = $match;
+		$this->params = $params;
+	}
+
+	public function urlPregCallback($matches)
+	{
+		if($matches[3]=="slug")
+			return $this->match->slug($this->params[$matches[1]]);
+		else
+			return $this->params[$matches[1]];
 	}
 }
