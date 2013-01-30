@@ -454,6 +454,12 @@ class Match extends Builder
 		return "/".$locale.$url;
 	}
 
+	public function redirect($url, $locale = FALSE)
+	{
+		$newUrl = $this->url($url, $locale);
+		header("Location: ".$newUrl,TRUE,302);
+	}
+
 	public function slug($str)
 	{
 		$strnew=strtolower($str);
