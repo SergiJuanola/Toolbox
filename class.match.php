@@ -310,9 +310,12 @@ class Match extends Builder
 			if($result === 1)
 			{
 				foreach($params as $key=>$var){ 
-					if(is_numeric($key)){ 
+					if(is_numeric($key)) { 
 						unset($params[$key]); 
-					} 
+					}
+					else {
+						$_GET[$key] = $var;
+					}
 				} 
 				return array(
 								'method' => $method,
