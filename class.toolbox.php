@@ -61,7 +61,7 @@ class Toolbox {
 
 	public function getDefault($class)
 	{
-		return $this->_loaded[$class]['default'];
+		return array_key_exists($class, $this->_loaded)? $this->_loaded[$class]['default'] : array();
 	}
 
 	public function setDefault($class, $default)
