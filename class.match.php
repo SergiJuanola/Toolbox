@@ -425,6 +425,7 @@ class Match extends Builder
 
 	public function url($url, $locale = FALSE)
 	{
+		$basePath = $this->basePath;
 		if(empty($url))
 			$url = "/";
 		if($locale === FALSE)
@@ -432,7 +433,7 @@ class Match extends Builder
 			$locale = $this->getLocale();
 		}
 		if(!in_array($locale, $this->locales))
-			return $url;
+			return $basePath.$url;
 
 		foreach ($this->localeUris as $localeUri => $localeUris) {
 			$localeUri = $this->cleanParams($localeUri, FALSE);
@@ -450,11 +451,12 @@ class Match extends Builder
 						$paramReplace[] = $value;
 					}
 					//return preg_replace($paramFind, $paramReplace, $localizedUri);
-					return preg_replace_callback($paramFind, array($callback, "urlPregCallback"), $localizedUri);
+					$newUri = preg_replace_callback($paramFind, array($callback, "urlPregCallback"), $localizedUri);
+					return $basePath.$newUri;
 				}
 			}
 		}
-		return "/".$locale.$url;
+		return $basePath."/".$locale.$url;
 	}
 
 	public function redirect($url, $locale = FALSE)
