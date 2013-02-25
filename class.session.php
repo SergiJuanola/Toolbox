@@ -31,46 +31,55 @@ class Session extends Builder implements InputOutput {
 			$value = $args[1];
 			$_SESSION[$this->prefix.$key] = $value;
 		}
+		return $this;
 	}
 
 	public function retrieve()
 	{
 		$args = func_get_args();
-		if(func_num_args() == 1)
+		if(func_num_args() == 0)
 		{
-			$args[] = NULL;
+			return NULL;
 		}
-		if(count($args) == 2)
+		if(count($args) == 1)
 		{
-			$key = $args[0];
+			$default = NULL;
+		}
+		else
+		{
 			$default = $args[1];
-			if(!empty($_SESSION[$this->prefix.$key]))
-				return $_SESSION[$this->prefix.$key];
-			else
-				return $default;
 		}
+		$key = $args[0];
+		if(!empty($_SESSION[$this->prefix.$key]))
+			return $_SESSION[$this->prefix.$key];
+		else
+			return $default;
 	}
 
 	public function connect()
 	{
-		if(session_id() == '') {
-			session_start();
-		}
+		@session_start();
+		return $this;
 	}
 
 	public function disconnect()
 	{
 		session_write_close();
+		return $this;
 	}
 
 	public function destroy()
 	{
-		$_SESSION = array();
+		$this->connect();
+		session_unset();
 		session_destroy();
+		$_SESSION = array();
+		return $this;
 	}
 
 	public function __destruct()
 	{
 		$this->disconnect();
+		return $this;
 	}
 }
