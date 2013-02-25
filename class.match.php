@@ -432,7 +432,7 @@ class Match extends Builder
 			$locale = $this->getLocale();
 		}
 		if(!in_array($locale, $this->locales))
-			return $url;
+			return $this->basePath.$url;
 
 		foreach ($this->localeUris as $localeUri => $localeUris) {
 			$localeUri = $this->cleanParams($localeUri, FALSE);
@@ -450,11 +450,12 @@ class Match extends Builder
 						$paramReplace[] = $value;
 					}
 					//return preg_replace($paramFind, $paramReplace, $localizedUri);
-					return preg_replace_callback($paramFind, array($callback, "urlPregCallback"), $localizedUri);
+					$preparedUri = preg_replace_callback($paramFind, array($callback, "urlPregCallback"), $localizedUri);
+					return $this->basePath.$preparedUri;
 				}
 			}
 		}
-		return "/".$locale.$url;
+		return $this->basePath."/".$locale.$url;
 	}
 
 	public function redirect($url, $locale = FALSE)
@@ -476,6 +477,25 @@ class Match extends Builder
 		$strnew = preg_replace('~[^-\w]+~', '', $strnew);
 	
 		return $strnew;
+	}
+
+	public function deslug($str)
+	{
+		return str_replace("-", " ", $str);
+	}
+
+	public function escape($string)
+	{
+		$replace = array(
+			"\x00"  => '\x00',
+			"\n"    => '\n',
+			"\r"    => '\r',
+			'\\'    => '\\\\',
+			"'"     => "\'",
+			'"'     => '\"',
+			"\x1a"  => '\x1a'
+		);
+		return strtr($string, $replace);
 	}
 }
 
