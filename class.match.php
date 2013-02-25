@@ -477,6 +477,25 @@ class Match extends Builder
 	
 		return $strnew;
 	}
+
+	public function deslug($str)
+	{
+		return str_replace("-", " ", $str);
+	}
+
+	public function escape($string)
+	{
+		$replace = array(
+			"\x00"  => '\x00',
+			"\n"    => '\n',
+			"\r"    => '\r',
+			'\\'    => '\\\\',
+			"'"     => "\'",
+			'"'     => '\"',
+			"\x1a"  => '\x1a'
+		);
+		return strtr($string, $replace);
+	}
 }
 
 class MatchCallbacks
