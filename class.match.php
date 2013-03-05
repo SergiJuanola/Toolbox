@@ -497,6 +497,12 @@ class Match extends Builder
 		);
 		return strtr($string, $replace);
 	}
+
+	public function jsonResponse($object)
+	{
+		header("Content-type: application/json; charset=utf-8");
+		echo json_encode($object);
+	}
 }
 
 class MatchCallbacks
