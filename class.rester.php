@@ -32,6 +32,11 @@ class Rester extends Builder {
 		'dataFieldName' => 'rester_hmac_data',
 		'keyFieldName' => 'rester_hmac_key',
 		'digestFieldName' => 'rester_hmac_digest',
+		'uri' => '',
+		'data' => array(),
+		'__vault' => NULL,
+		'userKey' => '',
+		'userSecret' => '',
 	);
 
 	/**
@@ -64,7 +69,7 @@ class Rester extends Builder {
 		$string .= $this->timestampFieldName.'='.$timestamp;
 		$hmac = hash_hmac($this->algorithm, $string, $secret);
 
-		return array($hmac, $timestmap);
+		return array($hmac, $timestamp);
 	}
 
 	/**
@@ -78,7 +83,7 @@ class Rester extends Builder {
 	*/
 	public function checkHMAC($data, $secret, $timestamp, $hmac)
 	{
-		$hmac1 = $this->generateHmac($data, $secret, $timestamp);
+		list($hmac1, $list) = $this->generateHmac($data, $secret, $timestamp);
 		return $hmac == $hmac1;
 	}
 
@@ -100,7 +105,7 @@ class Rester extends Builder {
 	*/
 	public function isDateValid($date)
 	{
-		$now = strtotime(getCurrentDate());
+		$now = strtotime($this->getCurrentDate());
 		$then = strtotime($date);
 		return (($now-$then) <= $this->validDateRange);
 	}
@@ -157,7 +162,7 @@ class Rester extends Builder {
 			$this->writeNonce($key, $hmac, $timestamp);
 		}
 
-		if($this->checkHMAC($data, $secret, $timestamp) === FALSE)
+		if($this->checkHMAC($data, $secret, $timestamp, $hmac) === FALSE)
 		{
 			throw new AccessDeniedResterException('The secret is incorrect or the request is malformed.');
 			return FALSE;
@@ -198,9 +203,41 @@ class Rester extends Builder {
 	{
 		throw new NotImplementedResterException('writeNonce is not implemented yet. If you are on the Server side, you need to extend Rester and implement this method.');
 	}
+
+	public function setVault(Vault $vault)
+	{
+		$this->__vault = $vault;
+		return $this;
+	}
+
+	public function addData($key, $value, $isEncrypted = FALSE)
+	{
+		$data = $this->data;
+		if(FALSE === $isEncrypted)
+			$data[$key] = $value;
+		else
+			$data[$key] = $value;
+		$this->data = $data;
+		return $this;
+	}
+
+	public function call($uri)
+	{
+		$curl = curl_init($uri);
+
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($curl, CURLOPT_POST, true);
+
+		$data = $this->packSignature($this->data, $this->userKey, $this->userSecret);
+		$data = http_build_query($data);
+		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+		$curl_response = curl_exec($curl);
+		$this->data = array();
+		curl_close($curl);
+		echo $curl_response;
+	}
 }
 
-class ResterException extends Exception { }
-
+class ResterException extends Exception {}
 class NotImplementedResterException extends ResterException {}
 class AccessDeniedResterException extends ResterException {}
