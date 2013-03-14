@@ -8,6 +8,12 @@ require_once 'class.builder.php';
 
 class Match extends Builder
 {
+	const CALLER_UNKNOWN = 0;
+	const CALLER_CONTROLLER = 1;
+	const CALLER_URI = 2;
+	const CALLER_EXTERNAL = 3;
+	const CALLER_CLASS = 4;
+
 	public static $default = array(
 		'get'=>array(),
 		'post'=>array(),
@@ -171,13 +177,62 @@ class Match extends Builder
 		return $this;
 	}
 
+
+	/*
+		Home::index > inner controller
+		/home/ > reinject
+		http://www.google.com > redirect
+		#Home::index > external controller
+	*/
+	private function decideCaller()
+	{
+		$callback = $this->matched['callback'];
+		if(filter_var($callback, FILTER_VALIDATE_URL))
+		{
+			return Match::CALLER_EXTERNAL;
+		}
+		if(preg_match("@#[a-zA-Z0-9_]+::[a-zA-Z0-9_]+@", $callback)===1)
+		{
+			return Match::CALLER_CLASS;
+		}
+		if(preg_match("@(/[a-zA-Z0-9\+-_{}:]+)+/?@", $callback)===1)
+		{
+			return Match::CALLER_URI;
+		}
+		if(preg_match("@[a-zA-Z0-9_]+::[a-zA-Z0-9_]+@", $callback)===1)
+		{
+			return Match::CALLER_CONTROLLER;
+		}
+		return Match::CALLER_UNKNOWN;
+	}
+
 	public function fire()
 	{
 		$matchedUri = $this->basePath()->cleanUri()->matchUri();
 		if(!empty($matchedUri))
 		{
 			$this->matched = $matchedUri;
-			$this->callController();
+			switch ($this->decideCaller()) {
+				case Match::CALLER_CONTROLLER:
+					$this->callController();
+					break;
+				case Match::CALLER_URI:
+					$this->redirect($this->matched['callback']);
+					break;
+				case Match::CALLER_EXTERNAL:
+					header("Location: ".$this->matched['callback'],TRUE,302);
+					break;
+				case Match::CALLER_CLASS:
+					$callback = str_replace("#", "", $this->matched['callback']);
+					$parts = explode("::", $callback);
+					$item = new $parts[0];
+					$item->{$parts[1]};
+					break;
+				case Match::CALLER_UNKNOWN:
+				default:
+					$this->fireCode(404);
+					break;
+			}
 		}
 		else
 		{
