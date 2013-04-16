@@ -8,12 +8,32 @@ require_once 'class.builder.php';
 
 class Match extends Builder
 {
+	/**
+	* The callback is unknown
+	*/
 	const CALLER_UNKNOWN = 0;
+	/**
+	* The callback is a controller specially designed for Match
+	* @see Controller
+	*/
 	const CALLER_CONTROLLER = 1;
+	/**
+	* The callback is a URI from Match.
+	* In case the URI is not wellformed, it will anyway redirect the page there
+	*/
 	const CALLER_URI = 2;
+	/**
+	* The callback is an external URL. Match will redirect the page to this URL
+	*/
 	const CALLER_EXTERNAL = 3;
+	/**
+	* The callback is an external class defined by the user (or another library)
+	*/
 	const CALLER_CLASS = 4;
 
+	/**
+	* Default properties.
+	*/
 	public static $default = array(
 		'get'=>array(),
 		'post'=>array(),
@@ -24,6 +44,11 @@ class Match extends Builder
 		'localeUris' => array(),
 	);
 
+	/**
+	* Building method
+	* @param array $config The config array
+	* @see Builder::build()
+	*/
 	public static function build($config = array()) {
 		return new self($config);
 	}
@@ -209,6 +234,7 @@ class Match extends Builder
 	public function fire()
 	{
 		$matchedUri = $this->basePath()->cleanUri()->matchUri();
+
 		if(!empty($matchedUri))
 		{
 			$this->matched = $matchedUri;
@@ -217,7 +243,9 @@ class Match extends Builder
 					$this->callController();
 					break;
 				case Match::CALLER_URI:
-					$this->redirect($this->matched['callback']);
+				var_dump($this->matched);
+					$this->locale = (empty($this->matched['params']['__locale']))? $this->getDefaultLocale() : $this->matched['params']['__locale'];
+					$this->redirect($this->matched['callback'], $this->locale);
 					break;
 				case Match::CALLER_EXTERNAL:
 					header("Location: ".$this->matched['callback'],TRUE,302);
@@ -271,7 +299,18 @@ class Match extends Builder
 
 	public function getLocaleLength()
 	{
-		return empty($this->locales)? 0 : strlen($this->locales[0]);
+		if(empty($this->locales))
+			return 0;
+
+		$min = $max = strlen($this->locales[0]);
+		foreach ($this->locales as $locale) {
+			$thisLocaleLen = strlen($locale);
+			if($thisLocaleLen>$max)
+				$max = $thisLocaleLen;
+			if($thisLocaleLen<$min)
+				$min = $thisLocaleLen;
+		}
+		return "$min,$max";
 	}
 
 	private function callController()
@@ -361,7 +400,10 @@ class Match extends Builder
 		foreach ($this->{$method} as $uri => $callback) {
 			$oriUri = $uri;
 			$uri = $this->cleanParams($uri);
-			$result = preg_match("@^".$uri."$@", $this->uri, $params);
+			if (strpos($uri, "/") == (strlen($uri)-1)) {
+				$uri = substr($uri, 0, (strlen($uri)-1));
+			}
+			$result = preg_match("@^".$uri."/?$@", $this->uri, $params);
 			if($result === 1)
 			{
 				foreach($params as $key=>$var){ 
