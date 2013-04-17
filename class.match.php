@@ -243,7 +243,6 @@ class Match extends Builder
 					$this->callController();
 					break;
 				case Match::CALLER_URI:
-				var_dump($this->matched);
 					$this->locale = (empty($this->matched['params']['__locale']))? $this->getDefaultLocale() : $this->matched['params']['__locale'];
 					$this->redirect($this->matched['callback'], $this->locale);
 					break;
