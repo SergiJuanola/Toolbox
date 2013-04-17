@@ -81,7 +81,7 @@ class Brush extends Builder {
 	* 
 	* If Brush has a $match, it gets the current url and localises to the selected locale.
 	* @param string $locale The locale we want to use
-	* @return string the localised url
+	* @return string the localised url. FALSE if Match is not present 
 	* @see Match::url(), Brush::setMatch()
 	*/
 	public function getCurrentUrlLocalized($locale)
