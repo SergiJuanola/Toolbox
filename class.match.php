@@ -360,6 +360,11 @@ class Match extends Builder
 		return $this;
 	}
 
+	public function setLocale($locale)
+	{
+		$this->locale = in_array($locale, $this->locales)? $locale : FALSE;
+	}
+
 	public function getLocale()
 	{
 		if(!empty($this->locale) && in_array($this->locale, $this->locales))
