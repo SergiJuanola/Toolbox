@@ -8,6 +8,32 @@ require_once 'class.builder.php';
 
 class Match extends Builder
 {
+	/**
+	* The callback is unknown
+	*/
+	const CALLER_UNKNOWN = 0;
+	/**
+	* The callback is a controller specially designed for Match
+	* @see Controller
+	*/
+	const CALLER_CONTROLLER = 1;
+	/**
+	* The callback is a URI from Match.
+	* In case the URI is not wellformed, it will anyway redirect the page there
+	*/
+	const CALLER_URI = 2;
+	/**
+	* The callback is an external URL. Match will redirect the page to this URL
+	*/
+	const CALLER_EXTERNAL = 3;
+	/**
+	* The callback is an external class defined by the user (or another library)
+	*/
+	const CALLER_CLASS = 4;
+
+	/**
+	* Default properties.
+	*/
 	public static $default = array(
 		'get'=>array(),
 		'post'=>array(),
@@ -18,6 +44,11 @@ class Match extends Builder
 		'localeUris' => array(),
 	);
 
+	/**
+	* Building method
+	* @param array $config The config array
+	* @see Builder::build()
+	*/
 	public static function build($config = array()) {
 		return new self($config);
 	}
@@ -171,13 +202,64 @@ class Match extends Builder
 		return $this;
 	}
 
+
+	/*
+		Home::index > inner controller
+		/home/ > reinject
+		http://www.google.com > redirect
+		#Home::index > external controller
+	*/
+	private function decideCaller()
+	{
+		$callback = $this->matched['callback'];
+		if(filter_var($callback, FILTER_VALIDATE_URL))
+		{
+			return Match::CALLER_EXTERNAL;
+		}
+		if(preg_match("@#[a-zA-Z0-9_]+::[a-zA-Z0-9_]+@", $callback)===1)
+		{
+			return Match::CALLER_CLASS;
+		}
+		if(preg_match("@(/[a-zA-Z0-9\+-_{}:]+)+/?@", $callback)===1)
+		{
+			return Match::CALLER_URI;
+		}
+		if(preg_match("@[a-zA-Z0-9_]+::[a-zA-Z0-9_]+@", $callback)===1)
+		{
+			return Match::CALLER_CONTROLLER;
+		}
+		return Match::CALLER_UNKNOWN;
+	}
+
 	public function fire()
 	{
 		$matchedUri = $this->basePath()->cleanUri()->matchUri();
+
 		if(!empty($matchedUri))
 		{
 			$this->matched = $matchedUri;
-			$this->callController();
+			switch ($this->decideCaller()) {
+				case Match::CALLER_CONTROLLER:
+					$this->callController();
+					break;
+				case Match::CALLER_URI:
+					$this->locale = (empty($this->matched['params']['__locale']))? $this->getDefaultLocale() : $this->matched['params']['__locale'];
+					$this->redirect($this->matched['callback'], $this->locale);
+					break;
+				case Match::CALLER_EXTERNAL:
+					header("Location: ".$this->matched['callback'],TRUE,302);
+					break;
+				case Match::CALLER_CLASS:
+					$callback = str_replace("#", "", $this->matched['callback']);
+					$parts = explode("::", $callback);
+					$item = new $parts[0];
+					$item->{$parts[1]};
+					break;
+				case Match::CALLER_UNKNOWN:
+				default:
+					$this->fireCode(404);
+					break;
+			}
 		}
 		else
 		{
@@ -216,7 +298,18 @@ class Match extends Builder
 
 	public function getLocaleLength()
 	{
-		return empty($this->locales)? 0 : strlen($this->locales[0]);
+		if(empty($this->locales))
+			return 0;
+
+		$min = $max = strlen($this->locales[0]);
+		foreach ($this->locales as $locale) {
+			$thisLocaleLen = strlen($locale);
+			if($thisLocaleLen>$max)
+				$max = $thisLocaleLen;
+			if($thisLocaleLen<$min)
+				$min = $thisLocaleLen;
+		}
+		return "$min,$max";
 	}
 
 	private function callController()
@@ -267,6 +360,11 @@ class Match extends Builder
 		return $this;
 	}
 
+	public function setLocale($locale)
+	{
+		$this->locale = in_array($locale, $this->locales)? $locale : FALSE;
+	}
+
 	public function getLocale()
 	{
 		if(!empty($this->locale) && in_array($this->locale, $this->locales))
@@ -306,7 +404,10 @@ class Match extends Builder
 		foreach ($this->{$method} as $uri => $callback) {
 			$oriUri = $uri;
 			$uri = $this->cleanParams($uri);
-			$result = preg_match("@^".$uri."$@", $this->uri, $params);
+			if (strpos($uri, "/") == (strlen($uri)-1)) {
+				$uri = substr($uri, 0, (strlen($uri)-1));
+			}
+			$result = preg_match("@^".$uri."/?$@", $this->uri, $params);
 			if($result === 1)
 			{
 				foreach($params as $key=>$var){ 
@@ -496,6 +597,12 @@ class Match extends Builder
 			"\x1a"  => '\x1a'
 		);
 		return strtr($string, $replace);
+	}
+
+	public function jsonResponse($object)
+	{
+		header("Content-type: application/json; charset=utf-8");
+		echo json_encode($object);
 	}
 }
 

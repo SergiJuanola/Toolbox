@@ -52,6 +52,7 @@ class Orm extends Builder {
 			else
 				$items[] = (object)$item;
 		}
+		Orm::$_lastError = mysql_error();
 		Orm::$_lastQuery = $query;
 		return $items;
 	}
