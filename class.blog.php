@@ -44,6 +44,96 @@ class Blog extends Builder {
 		return $self;
 	}
 
+	public function getPost($slug, $lang = NULL)
+	{
+		$sql = "SELECT * FROM `{$this->table}` ";
+		$params = array();
+		$fields = array();
+
+		if(!empty($this->slugField))
+		{
+			$params[] = "`{$this->slugField}` = :{$this->slugField}";
+			$fields[":{$this->slugField}"] = $slug;
+		}
+		else
+		{
+			return NULL;
+		}
+		if(!empty($this->langField) && !empty($lang))
+		{
+			$params[] = "`{$this->langField}` = :{$this->langField}";
+			$fields[":{$this->langField}"] = $lang;
+		}
+
+		if(!empty($whereFields))
+			$sql .= " WHERE ".implode(" AND ", $whereFields);
+
+		$sql .= " LIMIT 1";
+
+		$statement = $this->pdo->prepare($sql);
+		$statement->execute($whereValues);
+
+		if($this->model == self::MODEL_ASSOC)
+		{
+			$post = $statement->fetch();
+			if($excerpted)
+			{
+				$post = $this->excerptAssoc($post);
+			}
+		}
+		else
+		{
+			$post = $statement->fetchObject($this->model);
+			if($excerpted)
+			{
+				$post = $this->excerptClass($post);
+			}
+		}
+		return $post;
+	}
+
+	public function getPostById($id, $lang = NULL)
+	{
+		$sql = "SELECT * FROM `{$this->table}` ";
+		$params = array();
+		$fields = array();
+
+		$params[] = "`{$this->idField}` = :{$this->idField}";
+		$fields[":{$this->idField}"] = $slug;
+
+		if(!empty($this->langField) && !empty($lang))
+		{
+			$params[] = "`{$this->langField}` = :{$this->langField}";
+			$fields[":{$this->langField}"] = $lang;
+		}
+
+		if(!empty($whereFields))
+			$sql .= " WHERE ".implode(" AND ", $whereFields);
+
+		$sql .= " LIMIT 1";
+
+		$statement = $this->pdo->prepare($sql);
+		$statement->execute($whereValues);
+
+		if($this->model == self::MODEL_ASSOC)
+		{
+			$post = $statement->fetch();
+			if($excerpted)
+			{
+				$post = $this->excerptAssoc($post);
+			}
+		}
+		else
+		{
+			$post = $statement->fetchObject($this->model);
+			if($excerpted)
+			{
+				$post = $this->excerptClass($post);
+			}
+		}
+		return $post;
+	}
+
 	public function getPosts($page = 0, $excerpted = TRUE)
 	{
 		$statement = $this->generateListStatement($page);
