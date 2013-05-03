@@ -44,6 +44,13 @@ class Blog extends Builder {
 		return $self;
 	}
 
+	public function getLocalizedPost($post, $lang) {
+		if(is_array($post))
+			return $this->getPostById($post[$this->idField], $lang);
+		else
+			return $this->getPostById($post->{$this->idField}, $lang);
+	}
+
 	public function getPost($slug, $lang = NULL)
 	{
 		$sql = "SELECT * FROM `{$this->table}` ";
@@ -76,18 +83,10 @@ class Blog extends Builder {
 		if($this->model == self::MODEL_ASSOC)
 		{
 			$post = $statement->fetch();
-			if($excerpted)
-			{
-				$post = $this->excerptAssoc($post);
-			}
 		}
 		else
 		{
 			$post = $statement->fetchObject($this->model);
-			if($excerpted)
-			{
-				$post = $this->excerptClass($post);
-			}
 		}
 		return $post;
 	}
@@ -95,16 +94,16 @@ class Blog extends Builder {
 	public function getPostById($id, $lang = NULL)
 	{
 		$sql = "SELECT * FROM `{$this->table}` ";
-		$params = array();
-		$fields = array();
+		$whereFields = array();
+		$whereValues = array();
 
-		$params[] = "`{$this->idField}` = :{$this->idField}";
-		$fields[":{$this->idField}"] = $slug;
+		$whereFields[] = "`{$this->idField}` = :{$this->idField}";
+		$whereValues[":{$this->idField}"] = $id;
 
 		if(!empty($this->langField) && !empty($lang))
 		{
-			$params[] = "`{$this->langField}` = :{$this->langField}";
-			$fields[":{$this->langField}"] = $lang;
+			$whereFields[] = "`{$this->langField}` = :{$this->langField}";
+			$whereValues[":{$this->langField}"] = $lang;
 		}
 
 		if(!empty($whereFields))
@@ -118,18 +117,10 @@ class Blog extends Builder {
 		if($this->model == self::MODEL_ASSOC)
 		{
 			$post = $statement->fetch();
-			if($excerpted)
-			{
-				$post = $this->excerptAssoc($post);
-			}
 		}
 		else
 		{
 			$post = $statement->fetchObject($this->model);
-			if($excerpted)
-			{
-				$post = $this->excerptClass($post);
-			}
 		}
 		return $post;
 	}
