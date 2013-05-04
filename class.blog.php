@@ -44,23 +44,16 @@ class Blog extends Builder {
 		return $self;
 	}
 
-	public function getLocalizedPost($post, $lang) {
-		if(is_array($post))
-			return $this->getPostById($post[$this->idField], $lang);
-		else
-			return $this->getPostById($post->{$this->idField}, $lang);
-	}
-
 	public function getPost($slug, $lang = NULL)
 	{
 		$sql = "SELECT * FROM `{$this->table}` ";
-		$params = array();
-		$fields = array();
+		$whereFields = array();
+		$whereValues = array();
 
 		if(!empty($this->slugField))
 		{
-			$params[] = "`{$this->slugField}` = :{$this->slugField}";
-			$fields[":{$this->slugField}"] = $slug;
+			$whereFields[] = "`{$this->slugField}` = :{$this->slugField}";
+			$whereValues[":{$this->slugField}"] = $slug;
 		}
 		else
 		{
@@ -68,8 +61,13 @@ class Blog extends Builder {
 		}
 		if(!empty($this->langField) && !empty($lang))
 		{
-			$params[] = "`{$this->langField}` = :{$this->langField}";
-			$fields[":{$this->langField}"] = $lang;
+			$whereFields[] = "`{$this->langField}` = :{$this->langField}";
+			$whereValues[":{$this->langField}"] = $lang;
+		}
+		else if(!empty($this->langField) && !empty($this->match))
+		{
+			$whereFields[] = "`{$this->langField}` = :{$this->langField}";
+			$whereValues[":{$this->langField}"] = $this->match->getLocale();
 		}
 
 		if(!empty($whereFields))
@@ -104,6 +102,11 @@ class Blog extends Builder {
 		{
 			$whereFields[] = "`{$this->langField}` = :{$this->langField}";
 			$whereValues[":{$this->langField}"] = $lang;
+		}
+		else if(!empty($this->langField) && !empty($this->match))
+		{
+			$whereFields[] = "`{$this->langField}` = :{$this->langField}";
+			$whereValues[":{$this->langField}"] = $this->match->getLocale();
 		}
 
 		if(!empty($whereFields))
