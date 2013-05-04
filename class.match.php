@@ -383,12 +383,12 @@ class Match extends Builder
 			"@{{((\w+))}}@",
 		);
 		$replace = array(
-			"(?P<\\2>[a-zA-Z0-9\+-_]+)",
+			"(?P<\\2>[a-zA-Z0-9\+\-_]+)",
 			"(?P<\\2>\d+)",
 			"(?P<\\2>\w{".$this->getLocaleLength()."})",
 			"(?P<\\2>\w+)",
 			"(?P<\\2>\w+)",
-			"(?P<\\2>[a-zA-Z0-9\+-_]+)",
+			"(?P<\\2>[a-zA-Z0-9\+\-_]+)",
 		);
 
 		if($strict === FALSE) // If strict is false, accept anything from some types
