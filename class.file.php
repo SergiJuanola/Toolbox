@@ -4,10 +4,9 @@
  * @package Toolbox
  */
 
-require_once 'class.builder.php';
-require_once 'interface.inputoutput.php';
+require_once 'class.inputoutput.php';
 
-class File extends Builder implements InputOutput {
+class File extends Inputoutput {
 	public static $default = array(
 		'folder'=>NULL,
 		'filename'=>NULL,

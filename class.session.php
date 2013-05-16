@@ -4,10 +4,9 @@
  * @package Toolbox
  */
 
-require_once 'class.builder.php';
-require_once 'interface.inputoutput.php';
+require_once 'class.inputoutput.php';
 
-class Session extends Builder implements InputOutput {
+class Session extends Inputoutput {
 	public static $default = array(
 		'prefix' => '',
 	);

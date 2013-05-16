@@ -11,7 +11,7 @@
 * standarize all the classes related to external
 * sources.
 */
-interface InputOutput {
+interface Iinputoutput {
 	/**
 	* Gets information from the data source
 	*/
@@ -31,4 +31,22 @@ interface InputOutput {
 	* Disconnects from the data source
 	*/
 	function disconnect();
+
+	/**
+	* Sets the Vault object
+	* @param $vault Vault The Vault you want to use
+	*/
+	function setVault(Vault $vault);
+
+	/**
+	* Gets the current Vault object, if present.
+	* @return mixed The current Vault object, NULL otherwise
+	*/
+	function getVault();
+
+	/**
+	* Checks if a Vault is set
+	* @return boolean TRUE if Vault is present, FALSE otherwise
+	*/
+	function hasVault();
 }
