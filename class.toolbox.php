@@ -103,7 +103,7 @@ class Toolbox {
 			}
 			else
 			{
-				if(strcmp($value, "Toolbox::".$dependencyName) === 0)
+				if(is_string($value) && strcmp($value, "Toolbox::".$dependencyName) === 0)
 				{
 					$value = $dependency;
 					return $config;
