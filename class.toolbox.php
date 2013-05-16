@@ -54,14 +54,38 @@ class Toolbox {
 			require_once('class.'.$name.'.php');
 			$class = ucfirst($name);
 			$reflector = new ReflectionClass($class);
-			$classDefault = $reflector->getStaticPropertyValue('default');
+			try {
+				$classDefault = $reflector->getStaticPropertyValue('default');
+			} catch (ReflectionException $e) {
+				$classDefault = array();				
+			}
 			$this->_loaded[$class] = array('default'=>array_merge($classDefault, $default));
 		}
 	}
 
 	public function getDefault($class)
 	{
-		return array_key_exists($class, $this->_loaded)? $this->_loaded[$class]['default'] : array();
+		if(!array_key_exists($class, $this->_loaded))
+			$this->load(strtolower($class), array());
+		return $this->_loaded[$class]['default'];
+	}
+
+	public function getWholeDefault($class)
+	{
+		$defaultConfig = self::getDefault($class);
+		$parentClass = get_parent_class($class);
+		while($parentClass !== FALSE)
+		{
+			$default = self::getDefault($parentClass);
+			foreach ($default as $key => $value) {
+				if(!array_key_exists($key, $defaultConfig))
+				{
+					$defaultConfig[$key] = $value;
+				}
+			}
+			$parentClass = get_parent_class($parentClass);
+		}
+		return $defaultConfig;
 	}
 
 	public function setDefault($class, $default)
