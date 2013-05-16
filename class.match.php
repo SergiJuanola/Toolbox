@@ -661,6 +661,19 @@ class Match extends Builder
 		$locales = array_keys($sortedLocales);
 		return $locales[0];
 	}
+
+	public function isLocalePresentInUri()
+	{
+		if(empty($this->matched['params']['__locale']))
+			return FALSE;
+
+		$uriLocale = $this->matched['params']['__locale'];
+		foreach ($this->locales as $locale) {
+			if($locale==$uriLocale)
+				return TRUE;
+		}
+		return FALSE;
+	}
 }
 
 class MatchCallbacks
