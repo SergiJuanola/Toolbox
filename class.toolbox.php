@@ -16,6 +16,7 @@ class Toolbox {
 		foreach ($this->_config as $name => $default) {
 			$this->load($name, $default);
 		}
+		$this->prepareDependencies();
 		return $this;
 	}
 
@@ -59,24 +60,92 @@ class Toolbox {
 			} catch (ReflectionException $e) {
 				$classDefault = array();				
 			}
-			$this->_loaded[$class] = array('default'=>array_merge($classDefault, $default));
+			$this->_loaded[$name] = array('default'=>array_merge($classDefault, $default));
 		}
+	}
+
+	private function prepareDependencies($caughtDependencies = 0)
+	{
+		$currentCaughtDependencies = 0;
+		$_loaded = $this->_loaded;
+		foreach ($_loaded as $class => $config) {
+			if(($dependency = $this->containsDependency($config['default'])) !== FALSE)
+			{
+				$currentCaughtDependencies++;
+				if($this->containsDependency($this->getDefault($dependency)) === FALSE)
+				{
+					$className = ucfirst($dependency);
+					$r = new ReflectionClass($className);
+   					$object = $r->newInstanceArgs(array('config'=>$this->getDefault($dependency)));
+					$newConfig = $this->fixDependency($config['default'], $dependency, $object );
+					$_loaded[$class]['default'] = $newConfig;
+				}
+			}
+		}
+		$this->_loaded = $_loaded;
+
+		if($currentCaughtDependencies > 0)
+		{
+			if($caughtDependencies === $currentCaughtDependencies)
+				throw new Exception('Loop!');
+			else
+				$this->prepareDependencies($currentCaughtDependencies);
+		}
+	}
+
+	private function fixDependency(&$config, $dependencyName, $dependency)
+	{
+		foreach ($config as $key => &$value) {
+			if(is_array($value))
+			{
+				$config[$key] =  $this->fixDependency($value, $dependencyName, $dependency);
+				return $config;
+			}
+			else
+			{
+				if(strcmp($value, "Toolbox::".$dependencyName) === 0)
+				{
+					$value = $dependency;
+					return $config;
+				}
+			}
+		}
+	}
+
+	private function containsDependency($config)
+	{
+		foreach ($config as $key => $value) {
+			if(is_array($value))
+			{
+				$contains = $this->containsDependency($value);
+				if($contains !== FALSE)
+					return $contains;
+			}
+			elseif(is_string($value))
+			{
+				if(strpos($value, "Toolbox::") === 0)
+					return substr($value, 9);
+			}
+		}
+		return FALSE;
 	}
 
 	public function getDefault($class)
 	{
+		$class = strtolower($class);
+			
 		if(!array_key_exists($class, $this->_loaded))
-			$this->load(strtolower($class), array());
+			$this->load($class, array());
 		return $this->_loaded[$class]['default'];
 	}
 
 	public function getWholeDefault($class)
 	{
-		$defaultConfig = self::getDefault($class);
+		$defaultConfig = $this->getDefault($class);
 		$parentClass = get_parent_class($class);
 		while($parentClass !== FALSE)
 		{
-			$default = self::getDefault($parentClass);
+			$default = $this->getDefault($parentClass);
 			foreach ($default as $key => $value) {
 				if(!array_key_exists($key, $defaultConfig))
 				{

@@ -67,7 +67,7 @@ abstract class Inputoutput extends Builder implements Iinputoutput {
 	*/
 	function hasVault()
 	{
-		if(!empty($this->__vault) && get_class($this->__vault) == "Vault")
+		if(!empty($this->__vault) && !is_string($this->__vault) && get_class($this->__vault) == "Vault")
 		{
 			return TRUE;
 		}
