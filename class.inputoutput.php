@@ -23,22 +23,22 @@ abstract class Inputoutput extends Builder implements Iinputoutput {
 	/**
 	* Gets information from the data source
 	*/
-	abstract function retrieve();
+	public abstract function retrieve();
 
 	/**
 	* Saves class information to the data source
 	*/
-	abstract function store();
+	public abstract function store();
 
 	/**
 	* Connects to the data source
 	*/
-	abstract function connect();
+	public abstract function connect();
 
 	/**
 	* Disconnects from the data source
 	*/
-	abstract function disconnect();
+	public abstract function disconnect();
 
 	/**
 	* Sets the Vault object
@@ -53,7 +53,7 @@ abstract class Inputoutput extends Builder implements Iinputoutput {
 	* Gets the current Vault object, if present.
 	* @return mixed The current Vault object, NULL otherwise
 	*/
-	function getVault()
+	public function getVault()
 	{
 		if($this->hasVault())
 		{
@@ -65,12 +65,40 @@ abstract class Inputoutput extends Builder implements Iinputoutput {
 	* Checks if a Vault is set
 	* @return boolean TRUE if Vault is present, FALSE otherwise
 	*/
-	function hasVault()
+	public function hasVault()
 	{
 		if(!empty($this->__vault) && !is_string($this->__vault) && get_class($this->__vault) == "Vault")
 		{
 			return TRUE;
 		}
 		return FALSE;
+	}
+
+	/**
+	* Process the input using Vault, if present
+	* @param $input mixed The input
+	* @return String A processed input, if possible
+	*/
+	public function processInput($input)
+	{
+		if(!is_string($input) && !is_numeric($input) && !is_bool($input))
+			return $input;
+		if(!$this->hasVault())
+			return $input;
+		return $this->getVault()->encrypt($input);
+	}
+
+	/**
+	* Process the output using Vault, if present
+	* @param $output mixed The output
+	* @return String A processed output, if possible
+	*/
+	public function processOutput($output)
+	{
+		if(!is_string($output) && !is_numeric($output) && !is_bool($output))
+			return $output;
+		if(!$this->hasVault())
+			return $output;
+		return $this->getVault()->decrypt($output);
 	}
 }

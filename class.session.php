@@ -28,7 +28,7 @@ class Session extends Inputoutput {
 			$args = func_get_args();
 			$key = $args[0];
 			$value = $args[1];
-			$_SESSION[$this->prefix.$key] = $value;
+			$_SESSION[$this->prefix.$key] = $this->processInput($value);
 		}
 		return $this;
 	}
@@ -50,7 +50,7 @@ class Session extends Inputoutput {
 		}
 		$key = $args[0];
 		if(!empty($_SESSION[$this->prefix.$key]))
-			return $_SESSION[$this->prefix.$key];
+			return $this->processOutput($_SESSION[$this->prefix.$key]);
 		else
 			return $default;
 	}
