@@ -34,7 +34,7 @@ interface Iinputoutput {
 
 	/**
 	* Sets the Vault object
-	* @param $vault Vault The Vault you want to use
+	* @param Vault $vault The Vault you want to use
 	*/
 	function setVault(Vault $vault);
 

@@ -17,6 +17,19 @@ class Blog extends Builder {
 
 	/**
 	* Default properties.
+	* @param Pdotool $pdo The Pdotool used to connect to the database.
+	* @param Match $match The Match used here.
+	* @param string $model The name of the class that holds each post, or MODEL_ASSOC if the return value is an associative array. Defaults to MODEL_ASSOC.
+	* @param string $table The table name that holds each post. Defaults to 'post'.
+	* @param int $postsPerPage The amount of posts per page. Defaults to 4.
+	* @param mixed $excerpt The system Blog will use to generate an excerpt and store it in content. If $excerpt is a number, it will crop the $contentField to that amount of characters. If it is a string, it will use that as a field name of the table. If it is FALSE, it will use the $contentField itself. Defaults to FALSE.
+	* @param string $langField The field name in the selected table that holds the language of the post. If NO_FIELD, no lang is set and will not be used. Defaults to NO_FIELD.
+	* @param string $slugField The field name in the selected table that holds the slug of the post. If NO_FIELD, no slug is set and will not be used. Defaults to NO_FIELD.
+	* @param string $dateField The field name in the selected table that holds the creation time of the post. If NO_FIELD, no date is set and will not be used. Note that this field is used for sorting. If you want to sort the posts using other criteria rather than Date, you can use it as well. Defaults to NO_FIELD.
+	* @param string $idField The field name in the selected table that holds the id of the post. If NO_FIELD, no id is set and will not be used. Defaults to 'id'.
+	* @param string $contentField The field name in the selected table that holds the content of the post. If NO_FIELD, no content is set and will not be used. Defaults to 'content'.
+	* @see Pdotool
+	* @see Match
 	*/
 	public static $default = array(
 		'pdo' => NULL,
@@ -44,6 +57,15 @@ class Blog extends Builder {
 		return $self;
 	}
 
+
+	/**
+	* Gets a post by its slug.
+	* Get a post from the database, using its slug and language, if present.
+	* @param string $slug The post slug
+	* @param string $lang The language. If NULL, and $langField is defined, it will check Match for the current language. If no $langField is defined, each post is treated as coming from the same language. Defaults to NULL.
+	* @return mixed The post matching the slug. Its class depends on the $model property (an associative array or a $model type). If slug is empty or a post is not found, returns NULL.
+	* @see Match
+	*/
 	public function getPost($slug, $lang = NULL)
 	{
 		$sql = "SELECT * FROM `{$this->table}` ";
@@ -89,6 +111,15 @@ class Blog extends Builder {
 		return $post;
 	}
 
+	
+	/**
+	* Gets a post by its id. It is useful for grabbing the same post in another language.
+	* Get a post from the database, using its id and language, if present.
+	* @param mixed $id The post id.
+	* @param string $lang The language. If NULL, and $langField is defined, it will check Match for the current language. If no $langField is defined, each post is treated as coming from the same language. Defaults to NULL.
+	* @return mixed The post matching the id. Its class depends on the $model property (an associative array or a $model type). If a post is not found, returns NULL.
+	* @see Match
+	*/
 	public function getPostById($id, $lang = NULL)
 	{
 		$sql = "SELECT * FROM `{$this->table}` ";
@@ -128,6 +159,15 @@ class Blog extends Builder {
 		return $post;
 	}
 
+	
+	/**
+	* Gets a list of posts, paginated and excerpted, if needed.
+	* The post list is ordered by the $dateField field descending. It filters the posts by the current language, if a Match and $langField are present.
+	* @param int $page The current page. The first page is 0. Defaults to 0.
+	* @param boolean $excerpted TRUE if you want the content to be excerpted, FALSE otherwise. Defaults to TRUE. 
+	* @return array The posts list, already filtered by page and language.
+	* @see Match
+	*/
 	public function getPosts($page = 0, $excerpted = TRUE)
 	{
 		$statement = $this->generateListStatement($page);
@@ -155,6 +195,12 @@ class Blog extends Builder {
 		return $posts;
 	}
 
+	
+	/**
+	* Create a criteria to filter the posts for Pdotool.
+	* @param int $page The current page. The first page is 0. Defaults to 0.
+	* @return PDOStatement The statement to filter the posts.
+	*/
 	private function generateListStatement($page = 0)
 	{
 		$sql = "SELECT * FROM `{$this->table}` ";
@@ -177,6 +223,11 @@ class Blog extends Builder {
 		return $statement;
 	}
 
+	/**
+	* Excerpt a post, coming in a class. The resulting excerpt is stored in $contentField
+	* @param object $post The post to be excerpted.
+	* @return object The post once excerpted.
+	*/
 	private function excerptClass($post) {
 		if($this->excerpt == FALSE)
 			return $post;
@@ -194,6 +245,11 @@ class Blog extends Builder {
 		return $post;
 	}
 
+	/**
+	* Excerpt a post, coming in an associative array. The resulting excerpt is stored in $contentField
+	* @param array $post The post to be excerpted.
+	* @return array The post once excerpted.
+	*/
 	private function excerptAssoc($post) {
 		if($this->excerpt == FALSE)
 			return $post;
