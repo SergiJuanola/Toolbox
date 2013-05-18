@@ -133,7 +133,7 @@ class Blog extends Builder {
 		$statement = $this->generateListStatement($page);
 		if($this->model == self::MODEL_ASSOC)
 		{
-			$posts = $statement->fetchAll();
+			$posts = $statement->fetchAll(PDO::FETCH_ASSOC);
 			if($excerpted)
 			{
 				foreach ($posts as &$post) {
@@ -208,5 +208,6 @@ class Blog extends Builder {
 				$content = substr($content, 0, ($this->excerpt-1))."&hellip;";
 			$post[$this->contentField] = $content;
 		}
+		return $post;
 	}
 }
