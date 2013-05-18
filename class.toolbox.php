@@ -76,7 +76,7 @@ class Toolbox {
 				{
 					$className = ucfirst($dependency);
 					$r = new ReflectionClass($className);
-   					$object = $r->newInstanceArgs(array('config'=>$this->getDefault($dependency)));
+					$object = $r->getMethod('build')->invoke(null, $this->getDefault($dependency));
 					$newConfig = $this->fixDependency($config['default'], $dependency, $object );
 					$_loaded[$class]['default'] = $newConfig;
 				}
