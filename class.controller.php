@@ -8,7 +8,6 @@
 *
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @version	0.5
 * @see Match
 */
 class Controller {

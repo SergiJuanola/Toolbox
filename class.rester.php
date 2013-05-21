@@ -11,7 +11,6 @@ require_once 'class.builder.php';
 *
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @version	0.5
 * @see Builder
 */
 class Rester extends Builder {
