@@ -3,6 +3,11 @@ require_once 'class.builder.php';
 require_once 'interface.iinputoutput.php';
 @include 'class.vault.php';
 
+/**
+ * Tool for Toolbox
+ * @package Toolbox
+ */
+
 abstract class Inputoutput extends Builder implements Iinputoutput {
 	/**
 	* Default properties.
