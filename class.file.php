@@ -4,10 +4,17 @@
  * @package Toolbox
  */
 
-require_once 'class.builder.php';
-require_once 'interface.inputoutput.php';
+require_once 'class.inputoutput.php';
 
-class File extends Builder implements InputOutput {
+/**
+* Access to server files, edit and read them
+*
+* @package Toolbox
+* @author 	Sergi Juanola 
+* @copyright	Sergi Juanola 2012-2013
+* @see Builder
+*/
+class File extends Inputoutput {
 	public static $default = array(
 		'folder'=>NULL,
 		'filename'=>NULL,
@@ -47,7 +54,7 @@ class File extends Builder implements InputOutput {
 	public function retrieve()
 	{
 		$this->connect("r");
-		clearstatcache(false, $this->folder.$this->filename);
+		clearstatcache();
 		return fread($this->__resource, filesize($this->folder.$this->filename));
 	}
 

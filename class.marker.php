@@ -7,6 +7,14 @@
 require_once 'class.builder.php';
 require_once 'vendor/php-markdown-extra/markdown.php';
 
+/**
+* Parse a Markdown text to html
+*
+* @package Toolbox
+* @author 	Sergi Juanola 
+* @copyright	Sergi Juanola 2012-2013
+* @see Builder
+*/
 class Marker extends Builder {
 	public static $default = array();
 

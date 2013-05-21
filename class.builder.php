@@ -3,12 +3,13 @@
  * Tool for Toolbox
  * @package Toolbox
  */
+
 /**
 * Builder class for Toolbox tools
 *
+* @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @version	0.5
 */
 abstract class Builder {
 
@@ -102,7 +103,7 @@ abstract class Builder {
      */
 	public static function addDefault($class, $default) {
 		if(self::hasToolbox())
-			Toolbox::build()->setDefault($class, array_merge($default, self::getDefault($class)));
+			Toolbox::build()->setDefault($class, array_merge($default, Toolbox::build()->getDefault($class)));
 	}
 
     /**
@@ -112,7 +113,7 @@ abstract class Builder {
      */
 	public static function getDefault($class) {
 		if(self::hasToolbox())
-			return Toolbox::build()->getDefault($class);
+			return Toolbox::build()->getWholeDefault($class);
 		else
 			return array();
 	}

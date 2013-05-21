@@ -6,6 +6,14 @@
 
 require_once 'class.builder.php';
 
+/**
+* Hold translations for a website
+*
+* @package Toolbox
+* @author 	Sergi Juanola 
+* @copyright	Sergi Juanola 2012-2013
+* @see Builder
+*/
 class Dictionary extends Builder {
 
 	public static $default = array(

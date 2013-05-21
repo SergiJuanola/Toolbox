@@ -6,6 +6,14 @@
 
 require_once 'class.builder.php';
 
+/**
+* Encrypt/decrypt texts automatically and url safe
+*
+* @package Toolbox
+* @author 	Sergi Juanola 
+* @copyright	Sergi Juanola 2012-2013
+* @see Builder
+*/
 class Vault extends Builder {
 	public static $default = array(
 		'algorithm' => MCRYPT_RIJNDAEL_256,

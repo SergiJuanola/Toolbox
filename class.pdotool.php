@@ -6,6 +6,14 @@
 
 require_once 'class.builder.php';
 
+/**
+* Create a PDO link to a database
+*
+* @package Toolbox
+* @author 	Sergi Juanola 
+* @copyright	Sergi Juanola 2012-2013
+* @see Builder
+*/
 class Pdotool extends Builder {
 	/**
 	* Default properties.

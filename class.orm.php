@@ -6,6 +6,15 @@
 
 require_once 'class.builder.php';
 
+/**
+* Parse a Markdown text to html
+*
+* @package Toolbox
+* @author 	Sergi Juanola 
+* @copyright	Sergi Juanola 2012-2013
+* @deprecated Deprecated since version 0.6.1
+* @see Builder
+*/
 class Orm extends Builder {
 	const STATUS_ERROR= 0;
 	const STATUS_OK= 1;

@@ -9,9 +9,9 @@ require_once 'class.builder.php';
 /**
 * Facade for REST API calls
 *
+* @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @version	0.5
 * @see Builder
 */
 class Rester extends Builder {
@@ -204,23 +204,37 @@ class Rester extends Builder {
 		throw new NotImplementedResterException('writeNonce is not implemented yet. If you are on the Server side, you need to extend Rester and implement this method.');
 	}
 
+	/**
+	* Set a your Vault for the rester to use it
+	* @param Vault $vault The Vault
+	*/
 	public function setVault(Vault $vault)
 	{
 		$this->__vault = $vault;
 		return $this;
 	}
 
+	/**
+	* Add data to the Rester call
+	* @param string $key The data key
+	* @param mixed $value The value you want to pass
+	* @param boolean $isEncrypted If the information needs to be encrypted. Defaults to FALSE
+	*/
 	public function addData($key, $value, $isEncrypted = FALSE)
 	{
 		$data = $this->data;
 		if(FALSE === $isEncrypted)
 			$data[$key] = $value;
-		else
-			$data[$key] = $value;
+		elseif(isset($this->__vault) && get_class($this->__vault) == "Vault")
+			$data[$key] = $this->__vault->encrypt($value);
 		$this->data = $data;
 		return $this;
 	}
 
+	/**
+	* Makes a call to the Rester's API target
+	* @param string $uri The URI you are querying
+	*/
 	public function call($uri)
 	{
 		$curl = curl_init($uri);
@@ -238,6 +252,30 @@ class Rester extends Builder {
 	}
 }
 
+
+/**
+* Generic Rester Exception
+*
+* @package Toolbox
+* @subpackage Exceptions
+* @see Rester
+*/
 class ResterException extends Exception {}
+
+/**
+* Exception called when a Rester method is not implemented
+*
+* @package Toolbox
+* @subpackage Exceptions
+* @see Rester
+*/
 class NotImplementedResterException extends ResterException {}
+
+/**
+* Exception called when the user has no access to an API
+*
+* @package Toolbox
+* @subpackage Exceptions
+* @see Rester
+*/
 class AccessDeniedResterException extends ResterException {}

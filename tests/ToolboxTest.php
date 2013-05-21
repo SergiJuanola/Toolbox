@@ -1,7 +1,22 @@
 <?php
+/**
+ * Toolbox test
+ * @package Toolbox
+ * @subpackage Tests
+ */
 
 require_once 'class.toolbox.php';
 
+/**
+* Unit testing for Toolbox
+*
+* @package Toolbox
+* @subpackage Tests
+* @author 	Sergi Juanola 
+* @copyright	Sergi Juanola 2012-2013
+* @see PHPUnit_Framework_TestCase
+* @see Toolbox
+*/
 class ToolboxTest extends PHPUnit_Framework_TestCase {
 	
 	public function testDefault()

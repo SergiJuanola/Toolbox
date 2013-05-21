@@ -6,6 +6,14 @@
 
 require_once 'class.builder.php';
 
+/**
+* Create a URL friendly, multilanguage structure for the site
+*
+* @package Toolbox
+* @author 	Sergi Juanola 
+* @copyright	Sergi Juanola 2012-2013
+* @see Builder
+*/
 class Match extends Builder
 {
 	/**
@@ -323,7 +331,8 @@ class Match extends Builder
 			$reflector = new ReflectionMethod($parts[0], $parts[1]);
 			$params = array();
 			foreach ($reflector->getParameters() as $param) {
-			    $params[] = $this->matched['params'][$param->name];
+				if(isset($this->matched['params'][$param->name]))
+			    	$params[] = $this->matched['params'][$param->name];
 			}
 			$controller = new $parts[0]($this, $this->hasToolbox()? Toolbox::build() : null);
 			if($this->hasLocale())
@@ -604,8 +613,85 @@ class Match extends Builder
 		header("Content-type: application/json; charset=utf-8");
 		echo json_encode($object);
 	}
+
+	/**
+	 * Based on the script by Jesse Skinner
+	 * @see http://www.thefutureoftheweb.com/blog/use-accept-language-header
+	 */
+	public function getAcceptLanguages($httpAcceptLanguage = NULL)
+	{
+		$langs = array();
+
+		if(empty($httpAcceptLanguage))
+		{
+			$httpAcceptLanguage = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+		}
+
+		if (!empty($httpAcceptLanguage)) {
+		    preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i', $httpAcceptLanguage, $lang_parse);
+
+		    if (count($lang_parse[1])) {
+		        $langs = array_combine($lang_parse[1], $lang_parse[4]);
+		    	
+		        foreach ($langs as $lang => $val) {
+		            $langs[$lang] = ($val === '')? 1 : floatval($val);
+		        }
+
+		        arsort($langs, SORT_NUMERIC);
+		    }
+		}
+		return $langs;
+	}
+
+	public function sortLocales($langs)
+	{
+		$locales = $this->locales;
+		$sortedLocales = array();
+		$pos = 1;
+		foreach ($locales as $locale)
+		{
+			$sortedLocales[$locale] = 0.1 / ($pos++);
+			foreach ($langs as $lang => $val) {
+				if(strpos($lang, $locale) === 0)
+				{
+					$sortedLocales[$locale] = $val;
+					break;
+				}
+			}
+		}
+		arsort($sortedLocales, SORT_NUMERIC);
+
+		return $sortedLocales;
+	}
+
+	public function getMostRelevantLocale($httpAcceptLanguage = NULL)
+	{
+		$sortedLocales = $this->sortLocales($this->getAcceptLanguages($httpAcceptLanguage));
+		$locales = array_keys($sortedLocales);
+		return $locales[0];
+	}
+
+	public function isLocalePresentInUri()
+	{
+		if(empty($this->matched['params']['__locale']))
+			return FALSE;
+
+		$uriLocale = $this->matched['params']['__locale'];
+		foreach ($this->locales as $locale) {
+			if($locale==$uriLocale)
+				return TRUE;
+		}
+		return FALSE;
+	}
 }
 
+/**
+* Callback class for Match
+*
+* @package Toolbox
+* @subpackage Callbacks
+* @see Match
+*/
 class MatchCallbacks
 {
 	private $params;

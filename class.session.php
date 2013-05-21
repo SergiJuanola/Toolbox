@@ -4,10 +4,17 @@
  * @package Toolbox
  */
 
-require_once 'class.builder.php';
-require_once 'interface.inputoutput.php';
+require_once 'class.inputoutput.php';
 
-class Session extends Builder implements InputOutput {
+/**
+* Connect to your current session, store and retrieve data
+*
+* @package Toolbox
+* @author 	Sergi Juanola 
+* @copyright	Sergi Juanola 2012-2013
+* @see Inputoutput
+*/
+class Session extends Inputoutput {
 	public static $default = array(
 		'prefix' => '',
 	);
@@ -29,7 +36,7 @@ class Session extends Builder implements InputOutput {
 			$args = func_get_args();
 			$key = $args[0];
 			$value = $args[1];
-			$_SESSION[$this->prefix.$key] = $value;
+			$_SESSION[$this->prefix.$key] = $this->processInput($value);
 		}
 		return $this;
 	}
@@ -51,7 +58,7 @@ class Session extends Builder implements InputOutput {
 		}
 		$key = $args[0];
 		if(!empty($_SESSION[$this->prefix.$key]))
-			return $_SESSION[$this->prefix.$key];
+			return $this->processOutput($_SESSION[$this->prefix.$key]);
 		else
 			return $default;
 	}

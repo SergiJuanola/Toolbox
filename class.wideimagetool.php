@@ -7,6 +7,14 @@
 require_once 'class.builder.php';
 require_once 'vendor/WideImage/WideImage.php';
 
+/**
+* Wrapper for Wideimage
+*
+* @package Toolbox
+* @author 	Sergi Juanola 
+* @copyright	Sergi Juanola 2012-2013
+* @see Builder
+*/
 class Wideimagetool extends Builder {
 	/**
 	* Default properties.

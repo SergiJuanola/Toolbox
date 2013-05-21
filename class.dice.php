@@ -5,6 +5,14 @@
  */
 require_once 'class.builder.php';
 
+/**
+* Random number generator
+*
+* @package Toolbox
+* @author 	Sergi Juanola 
+* @copyright	Sergi Juanola 2012-2013
+* @see Builder
+*/
 class Dice extends Builder {
 
 	public static $default = array(
