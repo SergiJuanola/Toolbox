@@ -215,8 +215,8 @@ class Rester extends Builder {
 		$data = $this->data;
 		if(FALSE === $isEncrypted)
 			$data[$key] = $value;
-		else
-			$data[$key] = $value;
+		elseif(isset($this->__vault) && get_class($this->__vault) == "Vault")
+			$data[$key] = $this->__vault->encrypt($value);
 		$this->data = $data;
 		return $this;
 	}
