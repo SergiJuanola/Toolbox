@@ -7,7 +7,12 @@
 require_once 'class.inputoutput.php';
 
 /**
-* Base example class for Tools
+* Create, delete or retrieve cookies
+*
+* @package Toolbox
+* @author 	Sergi Juanola 
+* @copyright	Sergi Juanola 2012-2013
+* @see Inputoutput
 */
 class Cookie extends Inputoutput {
 	/**

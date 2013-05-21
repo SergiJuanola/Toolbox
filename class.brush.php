@@ -8,6 +8,7 @@ require_once 'class.builder.php';
 /**
 * A template rendering class for Toolbox
 *
+* @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
 * @see Builder

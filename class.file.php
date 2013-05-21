@@ -6,6 +6,14 @@
 
 require_once 'class.inputoutput.php';
 
+/**
+* Access to server files, edit and read them
+*
+* @package Toolbox
+* @author 	Sergi Juanola 
+* @copyright	Sergi Juanola 2012-2013
+* @see Builder
+*/
 class File extends Inputoutput {
 	public static $default = array(
 		'folder'=>NULL,

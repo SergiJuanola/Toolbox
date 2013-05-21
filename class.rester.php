@@ -9,6 +9,7 @@ require_once 'class.builder.php';
 /**
 * Facade for REST API calls
 *
+* @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
 * @see Builder
@@ -237,6 +238,30 @@ class Rester extends Builder {
 	}
 }
 
+
+/**
+* Generic Rester Exception
+*
+* @package Toolbox
+* @subpackage Exceptions
+* @see Rester
+*/
 class ResterException extends Exception {}
+
+/**
+* Exception called when a Rester method is not implemented
+*
+* @package Toolbox
+* @subpackage Exceptions
+* @see Rester
+*/
 class NotImplementedResterException extends ResterException {}
+
+/**
+* Exception called when the user has no access to an API
+*
+* @package Toolbox
+* @subpackage Exceptions
+* @see Rester
+*/
 class AccessDeniedResterException extends ResterException {}

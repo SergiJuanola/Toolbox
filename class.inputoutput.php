@@ -1,13 +1,21 @@
 <?php 
+/**
+ * Tool for Toolbox
+ * @package Toolbox
+ */
 require_once 'class.builder.php';
 require_once 'interface.iinputoutput.php';
 @include 'class.vault.php';
 
 /**
- * Tool for Toolbox
- * @package Toolbox
- */
-
+* Class to connect to external sources. You should extend this class (or implement its interface) if you use a class that gets data from a source
+*
+* @package Toolbox
+* @author 	Sergi Juanola 
+* @copyright	Sergi Juanola 2012-2013
+* @see Builder
+* @see Iinputoutput
+*/
 abstract class Inputoutput extends Builder implements Iinputoutput {
 	/**
 	* Default properties.

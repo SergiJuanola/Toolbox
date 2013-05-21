@@ -3,9 +3,11 @@
  * Tool for Toolbox
  * @package Toolbox
  */
+
 /**
 * Controller class, used by Match to map rules. Classes should extend this class.
 *
+* @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
 * @see Match

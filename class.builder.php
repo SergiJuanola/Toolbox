@@ -3,9 +3,11 @@
  * Tool for Toolbox
  * @package Toolbox
  */
+
 /**
 * Builder class for Toolbox tools
 *
+* @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
 */

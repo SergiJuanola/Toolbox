@@ -6,6 +6,14 @@
 
 require_once 'class.builder.php';
 
+/**
+* Create a URL friendly, multilanguage structure for the site
+*
+* @package Toolbox
+* @author 	Sergi Juanola 
+* @copyright	Sergi Juanola 2012-2013
+* @see Builder
+*/
 class Match extends Builder
 {
 	/**
@@ -677,6 +685,13 @@ class Match extends Builder
 	}
 }
 
+/**
+* Callback class for Match
+*
+* @package Toolbox
+* @subpackage Callbacks
+* @see Match
+*/
 class MatchCallbacks
 {
 	private $params;

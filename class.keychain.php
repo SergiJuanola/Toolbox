@@ -9,9 +9,9 @@ require_once 'class.builder.php';
 /**
 * Alphanum code generator
 *
+* @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @version	0.5
 * @see Builder
 */
 class Keychain extends Builder {

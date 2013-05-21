@@ -1,7 +1,6 @@
 <?php 
 /**
  * Interface for Toolbox
- * @package Toolbox
  */
 /**
 * Interface used for InputOutput classes
@@ -10,6 +9,10 @@
 * to connect to a data source, just as a way to
 * standarize all the classes related to external
 * sources.
+* 
+* @package Toolbox
+* @author 	Sergi Juanola 
+* @copyright	Sergi Juanola 2012-2013
 */
 interface Iinputoutput {
 	/**

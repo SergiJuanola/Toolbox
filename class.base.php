@@ -3,11 +3,15 @@
  * Tool for Toolbox
  * @package Toolbox
  */
-
 require_once 'class.builder.php';
 
 /**
 * Base example class for Tools
+*
+* @package Toolbox
+* @author 	Sergi Juanola 
+* @copyright	Sergi Juanola 2012-2013
+* @see Builder
 */
 class Base extends Builder {
 	/**

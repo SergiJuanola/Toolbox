@@ -1,9 +1,15 @@
 <?php 
 /**
- * Tool for Toolbox
- * @package Toolbox
+ * Toolbox framework
  */
 
+/**
+* Create, include and predefine tools to be used for the user
+*
+* @package Toolbox
+* @author 	Sergi Juanola 
+* @copyright	Sergi Juanola 2012-2013
+*/
 class Toolbox {
 	protected $_config = array();
 	private $_loaded = array();
