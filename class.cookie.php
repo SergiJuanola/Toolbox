@@ -66,7 +66,7 @@ class Cookie extends Inputoutput {
 				$expirationTime = $args[3];
 			else
 				$expirationTime = $this->expirationTime;
-			setcookie($this->prefix.$key, $this->processInput($value), $expirationTime);
+			setcookie($this->prefix.$key, $this->processInput($value), time()+$expirationTime);
 		}
 		return $this;
 	}
@@ -80,7 +80,7 @@ class Cookie extends Inputoutput {
 	/**
 	* Connects to the data source
 	*/
-	public abstract function connect()
+	public function connect()
 	{
 		// No need to connect
 	}
@@ -88,7 +88,7 @@ class Cookie extends Inputoutput {
 	/**
 	* Disconnects from the data source
 	*/
-	public abstract function disconnect()
+	public function disconnect()
 	{
 		// No need to disconnect
 	}
