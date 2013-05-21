@@ -13,7 +13,7 @@ require_once 'class.builder.php';
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
 * @deprecated Deprecated since version 0.6.1
-* @see Builder
+* @link Builder
 */
 class Orm extends Builder {
 	const STATUS_ERROR= 0;

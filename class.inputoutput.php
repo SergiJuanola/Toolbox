@@ -13,8 +13,8 @@ require_once 'interface.iinputoutput.php';
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @see Builder
-* @see Iinputoutput
+* @link Builder
+* @link Iinputoutput
 */
 abstract class Inputoutput extends Builder implements Iinputoutput {
 	/**
@@ -27,7 +27,7 @@ abstract class Inputoutput extends Builder implements Iinputoutput {
 	/**
 	* Building method
 	* @param array $config The config array
-	* @see Builder::build()
+	* @link Builder::build()
 	*/
 	public static function build($config = array()) {
 		return new self($config);
