@@ -46,7 +46,7 @@ class File extends Inputoutput {
 	public function retrieve()
 	{
 		$this->connect("r");
-		clearstatcache(false, $this->folder.$this->filename);
+		clearstatcache();
 		return fread($this->__resource, filesize($this->folder.$this->filename));
 	}
 

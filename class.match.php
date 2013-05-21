@@ -323,7 +323,8 @@ class Match extends Builder
 			$reflector = new ReflectionMethod($parts[0], $parts[1]);
 			$params = array();
 			foreach ($reflector->getParameters() as $param) {
-			    $params[] = $this->matched['params'][$param->name];
+				if(isset($this->matched['params'][$param->name]))
+			    	$params[] = $this->matched['params'][$param->name];
 			}
 			$controller = new $parts[0]($this, $this->hasToolbox()? Toolbox::build() : null);
 			if($this->hasLocale())

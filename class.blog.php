@@ -14,6 +14,8 @@ class Blog extends Builder {
 
 	const MODEL_ASSOC = FALSE;
 	const NO_FIELD = FALSE;
+	const ORDER_ASCENDING = "ASC";
+	const ORDER_DESCENDING = "DESC";
 
 	/**
 	* Default properties.
@@ -41,6 +43,7 @@ class Blog extends Builder {
 		'langField' => self::NO_FIELD,
 		'slugField' => self::NO_FIELD,
 		'dateField' => self::NO_FIELD,
+		'dateOrder' => self::ORDER_DESCENDING,
 		'idField' => 'id',
 		'contentField' => 'content',
 	);
@@ -112,6 +115,69 @@ class Blog extends Builder {
 	}
 
 	
+	public function getNextPost($post)
+	{
+		$comparator = "";
+		switch ($this->dateOrder) {
+			case self::ORDER_DESCENDING:
+				$comparator = "<";
+				break;
+			case self::ORDER_ASCENDING:
+			default:
+				$comparator = ">";
+				break;
+		}
+		$sql = "SELECT * FROM `{$this->table}` WHERE `{$this->dateField}` $comparator :{$this->dateField} ORDER BY {$this->dateField} {$this->dateOrder} LIMIT 1";
+
+		$statement = $this->pdo->prepare($sql);
+
+
+		if($this->model == self::MODEL_ASSOC)
+		{
+			$statement->execute(array(":{$this->dateField}"=>$post[$this->dateField]));
+			$next = $statement->fetch();
+		}
+		else
+		{
+			$statement->execute(array(":{$this->dateField}"=>$post->{$this->dateField}));
+			$next = $statement->fetchObject($this->model);
+		}
+		return $next;
+	}
+
+	public function getPrevPost($post)
+	{
+		$comparator = "";
+		switch ($this->dateOrder) {
+			case self::ORDER_DESCENDING:
+				$comparator = ">";
+				$reorder = self::ORDER_ASCENDING;
+				break;
+			case self::ORDER_ASCENDING:
+			default:
+				$comparator = "<";
+				$reorder = self::ORDER_DESCENDING;
+				break;
+		}
+		$sql = "SELECT * FROM `{$this->table}` WHERE `{$this->dateField}` $comparator :{$this->dateField} ORDER BY {$this->dateField} $reorder LIMIT 1";
+
+		$statement = $this->pdo->prepare($sql);
+
+
+		if($this->model == self::MODEL_ASSOC)
+		{
+			$statement->execute(array(":{$this->dateField}"=>$post[$this->dateField]));
+			$prev = $statement->fetch();
+		}
+		else
+		{
+			$statement->execute(array(":{$this->dateField}"=>$post->{$this->dateField}));
+			$prev = $statement->fetchObject($this->model);
+		}
+		return $prev;
+	}
+
+	
 	/**
 	* Gets a post by its id. It is useful for grabbing the same post in another language.
 	* Get a post from the database, using its id and language, if present.
@@ -173,7 +239,7 @@ class Blog extends Builder {
 		$statement = $this->generateListStatement($page);
 		if($this->model == self::MODEL_ASSOC)
 		{
-			$posts = $statement->fetchAll();
+			$posts = $statement->fetchAll(PDO::FETCH_ASSOC);
 			if($excerpted)
 			{
 				foreach ($posts as &$post) {
@@ -215,7 +281,7 @@ class Blog extends Builder {
 			$sql .= " WHERE ".implode(" AND ", $whereFields);
 
 		if($this->dateField !== self::NO_FIELD)
-			$sql .= " ORDER BY `{$this->dateField}` DESC";
+			$sql .= " ORDER BY `{$this->dateField}` {$this->dateOrder}";
 		$sql .= " LIMIT {$this->postsPerPage} OFFSET ".($this->postsPerPage*$page);
 
 		$statement = $this->pdo->prepare($sql);
@@ -264,5 +330,6 @@ class Blog extends Builder {
 				$content = substr($content, 0, ($this->excerpt-1))."&hellip;";
 			$post[$this->contentField] = $content;
 		}
+		return $post;
 	}
 }

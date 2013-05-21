@@ -76,7 +76,7 @@ class Toolbox {
 				{
 					$className = ucfirst($dependency);
 					$r = new ReflectionClass($className);
-   					$object = $r->newInstanceArgs(array('config'=>$this->getDefault($dependency)));
+					$object = $r->getMethod('build')->invoke(null, $this->getDefault($dependency));
 					$newConfig = $this->fixDependency($config['default'], $dependency, $object );
 					$_loaded[$class]['default'] = $newConfig;
 				}
@@ -103,7 +103,7 @@ class Toolbox {
 			}
 			else
 			{
-				if(strcmp($value, "Toolbox::".$dependencyName) === 0)
+				if(is_string($value) && strcmp($value, "Toolbox::".$dependencyName) === 0)
 				{
 					$value = $dependency;
 					return $config;
