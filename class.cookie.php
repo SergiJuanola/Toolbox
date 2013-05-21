@@ -34,6 +34,7 @@ class Cookie extends Inputoutput {
 
 	/**
 	* Gets information from the data source
+	* @return mixed The cookie value
 	*/
 	public function retrieve()
 	{
@@ -59,6 +60,9 @@ class Cookie extends Inputoutput {
 
 	/**
 	* Saves class information to the data source
+	* @param string $key The cookie's key
+	* @param mixed $value The cookie's value
+	* @param int $expirationTime The specific expiration time from now.
 	*/
 	public function store()
 	{
@@ -76,6 +80,10 @@ class Cookie extends Inputoutput {
 		return $this;
 	}
 
+	/**
+	* Remove a cookie
+	* @param string $key The cookie's key
+	*/
 	public function remove($key)
 	{
 		setcookie($this->prefix.$key, "", time()-3600);

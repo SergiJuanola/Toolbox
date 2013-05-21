@@ -204,12 +204,22 @@ class Rester extends Builder {
 		throw new NotImplementedResterException('writeNonce is not implemented yet. If you are on the Server side, you need to extend Rester and implement this method.');
 	}
 
+	/**
+	* Set a your Vault for the rester to use it
+	* @param Vault $vault The Vault
+	*/
 	public function setVault(Vault $vault)
 	{
 		$this->__vault = $vault;
 		return $this;
 	}
 
+	/**
+	* Add data to the Rester call
+	* @param string $key The data key
+	* @param mixed $value The value you want to pass
+	* @param boolean $isEncrypted If the information needs to be encrypted. Defaults to FALSE
+	*/
 	public function addData($key, $value, $isEncrypted = FALSE)
 	{
 		$data = $this->data;
@@ -221,6 +231,10 @@ class Rester extends Builder {
 		return $this;
 	}
 
+	/**
+	* Makes a call to the Rester's API target
+	* @param string $uri The URI you are querying
+	*/
 	public function call($uri)
 	{
 		$curl = curl_init($uri);
