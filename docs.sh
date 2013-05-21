@@ -1,3 +1,3 @@
 #!/bin/bash
 
-phpdoc --ignore vendor/ -d . -t ../toolbox-docs -p
+phpdoc --ignore vendor/ --ignore tests/ -d . -t ../toolbox-docs -p
