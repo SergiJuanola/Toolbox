@@ -12,7 +12,7 @@ require_once 'class.rester.php';
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @see Rester
+* @link Rester
 */
 class Serverapi extends Rester {
 

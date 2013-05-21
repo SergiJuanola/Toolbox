@@ -10,7 +10,7 @@
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @see Match
+* @link Match
 */
 class Controller {
 	/**
@@ -58,7 +58,7 @@ class Controller {
 	* means it can be used in case you always instance the same classes
 	* with a concrete configuration, or to check if a user is logged in,
 	* for example.
-	* @see Controller::afterFire()
+	* @link Controller::afterFire()
 	*/
 	public function beforeFire() {}
 
@@ -69,7 +69,7 @@ class Controller {
 	* means it can be used for storing information in non volatile
 	* systems (databases, sessions, files) that happen to be used
 	* in every action.
-	* @see Controller::beforeFire()
+	* @link Controller::beforeFire()
 	*/
 	public function afterFire() {}
 }

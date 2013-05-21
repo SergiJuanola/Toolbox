@@ -13,7 +13,7 @@ require_once 'vendor/WideImage/WideImage.php';
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @see Builder
+* @link Builder
 */
 class Wideimagetool extends Builder {
 	/**
@@ -24,7 +24,7 @@ class Wideimagetool extends Builder {
 	/**
 	* Building method
 	* @param array $config The config array
-	* @see Builder::build()
+	* @link Builder::build()
 	*/
 	public static function build($config = array()) {
 		$tool = new self($config);

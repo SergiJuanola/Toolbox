@@ -12,7 +12,7 @@ require_once 'class.builder.php';
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @see Builder
+* @link Builder
 */
 class Keychain extends Builder {
 
@@ -36,7 +36,7 @@ class Keychain extends Builder {
 	* Building method
 	* @param array $config The config array
 	* @return Keychain An instance of itself
-	* @see Builder::build()
+	* @link Builder::build()
 	*/
 	public static function build($config = array()) {
 		return new self($config);
@@ -88,7 +88,7 @@ class Keychain extends Builder {
 	 *	$: Number, Uppercase or Lowercase letter
 	 *	{setname}: Any of the elements in setname
 	 * @return A new code
-	 * @see Keychain::batchGenerate($amount)
+	 * @link Keychain::batchGenerate($amount)
 	 */
 	public function generate()
 	{
@@ -134,7 +134,7 @@ class Keychain extends Builder {
 	 * Generate an amount of alphanumeric codes
 	 * @param integer $amount 
 	 * @return array The array of generated codes
-	 * @see Keychain::generate()
+	 * @link Keychain::generate()
 	 */
 	public function batchGenerate($amount)
 	{
@@ -149,7 +149,7 @@ class Keychain extends Builder {
 	 * Checks if a code can be generated with the current format
 	 * @param string $key The key to be checked
 	 * @return boolean TRUE if $key can be generated, FALSE otherwise
-	 * @see Keychain::generateRegex()
+	 * @link Keychain::generateRegex()
 	 */
 	public function isValid($key)
 	{
@@ -160,7 +160,7 @@ class Keychain extends Builder {
 	/**
 	 * Generates a regex for the current format, so it can be checked with isValid
 	 * @return string The generated regex
-	 * @see Keychain::isValid()
+	 * @link Keychain::isValid()
 	 */
 	private function generateRegex()
 	{

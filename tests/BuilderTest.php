@@ -14,8 +14,8 @@ require_once 'class.builder.php';
 * @subpackage Tests
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @see PHPUnit_Framework_TestCase
-* @see Builder
+* @link PHPUnit_Framework_TestCase
+* @link Builder
 */
 
 class BuilderTest extends PHPUnit_Framework_TestCase {

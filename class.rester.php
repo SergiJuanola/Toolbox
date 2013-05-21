@@ -12,7 +12,7 @@ require_once 'class.builder.php';
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @see Builder
+* @link Builder
 */
 class Rester extends Builder {
 
@@ -43,7 +43,7 @@ class Rester extends Builder {
 	* Building method
 	* @param array $config The config array
 	* @return Rester An instance of itself
-	* @see Builder::build()
+	* @link Builder::build()
 	*/
 	public static function build($config = array()) {
 		return new self($config);
@@ -54,7 +54,7 @@ class Rester extends Builder {
 	* @param array $data The data array
 	* @param string $secret The secret key
 	* @param string timestamp The current timestamp, formatted Y-m-d\TH:i:sO. Optional, defaults to the current timestamp
-	* @see DateTime::ISO8601
+	* @link DateTime::ISO8601
 	* @return array The resulting HMAC and the timestamp used for this call.
 	*/
 	public function generateHMAC($data, $secret, $timestamp = NULL)
@@ -77,7 +77,7 @@ class Rester extends Builder {
 	* @param array $data The data array
 	* @param string $secret The secret key
 	* @param string timestamp The current timestamp, formatted Y-m-d\TH:i:sO. You need to pass the timestamp the user sent
-	* @see DateTime::ISO8601
+	* @link DateTime::ISO8601
 	* @param string $hmac The HMAC you are comparing to
 	* @return string The resulting hmac
 	*/
@@ -90,7 +90,7 @@ class Rester extends Builder {
 	/**
 	* Returns the current date in an accepted format
 	* @return string The current date in ISO8601 format
-	* @see DateTime::ISO8601
+	* @link DateTime::ISO8601
 	*/
 	public function getCurrentDate()
 	{
@@ -99,7 +99,7 @@ class Rester extends Builder {
 
 	/**
 	* Checks if the date is within the valid range for a call
-	* @see Rester::validDateRange
+	* @link Rester::validDateRange
 	* @param string $date The date you are comparing to
 	* @return bool TRUE if the date is valid, FALSE otherwise
 	*/
@@ -258,7 +258,7 @@ class Rester extends Builder {
 *
 * @package Toolbox
 * @subpackage Exceptions
-* @see Rester
+* @link Rester
 */
 class ResterException extends Exception {}
 
@@ -267,7 +267,7 @@ class ResterException extends Exception {}
 *
 * @package Toolbox
 * @subpackage Exceptions
-* @see Rester
+* @link Rester
 */
 class NotImplementedResterException extends ResterException {}
 
@@ -276,6 +276,6 @@ class NotImplementedResterException extends ResterException {}
 *
 * @package Toolbox
 * @subpackage Exceptions
-* @see Rester
+* @link Rester
 */
 class AccessDeniedResterException extends ResterException {}

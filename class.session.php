@@ -12,7 +12,7 @@ require_once 'class.inputoutput.php';
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @see Inputoutput
+* @link Inputoutput
 */
 class Session extends Inputoutput {
 	public static $default = array(

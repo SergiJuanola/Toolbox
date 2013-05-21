@@ -12,7 +12,7 @@ require_once 'class.builder.php';
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @see Builder
+* @link Builder
 */
 class Pdotool extends Builder {
 	/**
@@ -31,7 +31,7 @@ class Pdotool extends Builder {
 	/**
 	* Building method
 	* @param array $config The config array
-	* @see Builder::build()
+	* @link Builder::build()
 	*/
 	public static function build($config = array()) {
 		$self = new self($config);

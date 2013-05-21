@@ -14,8 +14,8 @@ require_once 'class.toolbox.php';
 * @subpackage Tests
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @see PHPUnit_Framework_TestCase
-* @see Toolbox
+* @link PHPUnit_Framework_TestCase
+* @link Toolbox
 */
 class ToolboxTest extends PHPUnit_Framework_TestCase {
 	

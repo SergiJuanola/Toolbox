@@ -12,7 +12,7 @@ require_once 'class.pdotool.php';
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @see Builder
+* @link Builder
 */
 class Blog extends Builder {
 
@@ -34,8 +34,8 @@ class Blog extends Builder {
 	* @param string $dateField The field name in the selected table that holds the creation time of the post. If NO_FIELD, no date is set and will not be used. Note that this field is used for sorting. If you want to sort the posts using other criteria rather than Date, you can use it as well. Defaults to NO_FIELD.
 	* @param string $idField The field name in the selected table that holds the id of the post. If NO_FIELD, no id is set and will not be used. Defaults to 'id'.
 	* @param string $contentField The field name in the selected table that holds the content of the post. If NO_FIELD, no content is set and will not be used. Defaults to 'content'.
-	* @see Pdotool
-	* @see Match
+	* @link Pdotool
+	* @link Match
 	*/
 	public static $default = array(
 		'pdo' => NULL,
@@ -55,7 +55,7 @@ class Blog extends Builder {
 	/**
 	* Building method
 	* @param array $config The config array
-	* @see Builder::build()
+	* @link Builder::build()
 	*/
 	public static function build($config = array()) {
 		$self = new self($config);
@@ -71,7 +71,7 @@ class Blog extends Builder {
 	* @param string $slug The post slug
 	* @param string $lang The language. If NULL, and $langField is defined, it will check Match for the current language. If no $langField is defined, each post is treated as coming from the same language. Defaults to NULL.
 	* @return mixed The post matching the slug. Its class depends on the $model property (an associative array or a $model type). If slug is empty or a post is not found, returns NULL.
-	* @see Match
+	* @link Match
 	*/
 	public function getPost($slug, $lang = NULL)
 	{
@@ -188,7 +188,7 @@ class Blog extends Builder {
 	* @param mixed $id The post id.
 	* @param string $lang The language. If NULL, and $langField is defined, it will check Match for the current language. If no $langField is defined, each post is treated as coming from the same language. Defaults to NULL.
 	* @return mixed The post matching the id. Its class depends on the $model property (an associative array or a $model type). If a post is not found, returns NULL.
-	* @see Match
+	* @link Match
 	*/
 	public function getPostById($id, $lang = NULL)
 	{
@@ -236,7 +236,7 @@ class Blog extends Builder {
 	* @param int $page The current page. The first page is 0. Defaults to 0.
 	* @param boolean $excerpted TRUE if you want the content to be excerpted, FALSE otherwise. Defaults to TRUE. 
 	* @return array The posts list, already filtered by page and language.
-	* @see Match
+	* @link Match
 	*/
 	public function getPosts($page = 0, $excerpted = TRUE)
 	{
