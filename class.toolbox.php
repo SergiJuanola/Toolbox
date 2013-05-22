@@ -4,18 +4,36 @@
  */
 
 /**
-* Create, include and predefine tools to be used for the user
+* Create, include and predefine tools to be used for the user. Singleton class
 *
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
 */
 class Toolbox {
-	protected $_config = array();
-	private $_loaded = array();
-	protected $_required;
-	protected static $myself = null;
 
+	/**
+	* array The selected configuration for Toolbox and all of its modules
+	*/
+	protected $_config = array();
+
+
+	/**
+	* array The preloaded configuration for each tool
+	*/
+	private $_loaded = array();
+
+
+	/**
+	* Toolbox A reference to itself
+	*/
+	protected static $myself = NULL;
+
+
+	/**
+	* Protected constructor. It should never be publicly accessed
+	* @param array $config The config array
+	*/
 	protected function __construct($config)
 	{
 		$this->_config = $config;
@@ -26,12 +44,24 @@ class Toolbox {
 		return $this;
 	}
 
+
+	/**
+	* Set a value to the config structure
+	* @param string $key The key to the configuration
+	* @param mixed $value The value to store
+	*/
 	public function __set($key, $value)
 	{
 		$this->_config[$key] = $value;
 		return $this;
 	}
 
+
+	/**
+	* Set a value to the config structure
+	* @param string $key The key to the configuration
+	* @return mixed $value The value to retrieve
+	*/
 	public function __get($key)
 	{
 		if(array_key_exists($key, $this->_config))
@@ -40,14 +70,29 @@ class Toolbox {
 			return NULL;
 	}
 
+
+	/**
+	* Building method. It is the only way to create Toolbox
+	* @param array $config The config array
+	* @link Builder::build()
+	*/
 	public static function build($config = array()) { 
 		if(!isset(self::$myself))
 			self::$myself = new self($config);
 		return self::$myself;
 	}
 
+
+	/**
+	* Clone the object. It is not accessible
+	*/
     final private function __clone() {}
 
+
+    /**
+    * Load the configuration for the selected tools
+    * @param array $files The list to be included
+    */
 	public function need($files)
 	{
 		foreach ($files as $name =>$default) {
@@ -55,6 +100,12 @@ class Toolbox {
 		}
 	}
 
+
+	/**
+	* Load the configuration for a defined tool
+	* @param string $name The tool name, in lowercase
+	* @param array $default The default configuration for a tool
+	*/
 	private function load($name, $default)
 	{
 		if (!array_key_exists($name, $this->_loaded)) {
@@ -70,6 +121,11 @@ class Toolbox {
 		}
 	}
 
+
+	/**
+	* Prepare the dependencies of any reference to a tool in the configuration
+	* @param int $caughtDependencies The amount of previously caught dependencies
+	*/
 	private function prepareDependencies($caughtDependencies = 0)
 	{
 		$currentCaughtDependencies = 0;
@@ -99,6 +155,14 @@ class Toolbox {
 		}
 	}
 
+
+	/**
+	* Fix a dependency for a tool
+	* @param array $config The configuration for the selected dependency
+	* @param string $dependencyName The name for this dependency
+	* @param object $dependency The object generated for the passed config
+	* @return array The prepared configuration with the dependencies fixed
+	*/
 	private function fixDependency(&$config, $dependencyName, $dependency)
 	{
 		foreach ($config as $key => &$value) {
@@ -118,6 +182,12 @@ class Toolbox {
 		}
 	}
 
+
+	/**
+	* Check if a configuration contains a dependency
+	* @param array $config The configuration to be checked
+	* @return boolean TRUE if a configuration contains a dependency, FALSE otherwise
+	*/
 	private function containsDependency($config)
 	{
 		foreach ($config as $key => $value) {
@@ -136,6 +206,12 @@ class Toolbox {
 		return FALSE;
 	}
 
+
+	/**
+	* Get the default configuration of a class, set in Toolbox
+	* @param string $class The class to check
+	* @return array The default configuration of a class, or an empty array otherwise
+	*/
 	public function getDefault($class)
 	{
 		$class = strtolower($class);
@@ -145,6 +221,12 @@ class Toolbox {
 		return $this->_loaded[$class]['default'];
 	}
 
+
+	/**
+	* Get the default configuration of a class, set in Toolbox, plus the class default configuration
+	* @param string $class The class to check
+	* @return array The whole default configuration of a class, or an empty array otherwise
+	*/
 	public function getWholeDefault($class)
 	{
 		$defaultConfig = $this->getDefault($class);
@@ -163,6 +245,12 @@ class Toolbox {
 		return $defaultConfig;
 	}
 
+
+	/**
+	* Set the default Toolbox configuration of a tool
+	* @param string $class The class to be reset
+	* @param array The default configuration to be set
+	*/
 	public function setDefault($class, $default)
 	{
 		$this->_loaded[$class]['default'] = $default;

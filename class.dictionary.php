@@ -16,6 +16,14 @@ require_once 'class.builder.php';
 */
 class Dictionary extends Builder {
 
+	/**
+	* Default properties.
+	* @param Match $match The Match class used for getting the correct language
+	* @param string $dictionaries The path to the dictionaries
+	* @param boolean $canTranslate TRUE if everything is set, and the selected dictionary exists, FALSE otherwise. Defaults to FALSE
+	* @param array $__dictionary Array containing the translation to the selected $locale
+	* @param string $locale The locale selected, according to the Match
+	*/
 	public static $default = array(
 		'match'=>NULL,
 		'dictionaries'=>NULL,
@@ -24,6 +32,11 @@ class Dictionary extends Builder {
 		'locale'=>NULL,
 	);
 
+	/**
+	* Building method
+	* @param array $config The config array
+	* @link Builder::build()
+	*/
 	public static function build($config = array()) {
 		$dict = new self($config);
 		if(empty($dict->dictionaries) || empty($dict->match) || !$dict->match->hasLocale())
@@ -48,11 +61,20 @@ class Dictionary extends Builder {
 		return $dict;
 	}
 
+	/**
+	* Get the current locale set by Match
+	* @return string The current locale
+	*/
 	public function getLocale()
 	{
 		return $this->locale;
 	}
 
+	/**
+	* Translate the text to the selected locale
+	* @param string $sentence The sentence to be translated
+	* @return string The translated sentence, or itself if not present
+	*/
 	public function t($sentence)
 	{
 		if($this->canTranslate === TRUE && array_key_exists($sentence, $this->__dictionary))

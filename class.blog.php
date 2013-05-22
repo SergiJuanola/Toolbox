@@ -119,6 +119,11 @@ class Blog extends Builder {
 	}
 
 	
+	/**
+	* Gets the next post, according to $dateField
+	* @param Post $post The relative post
+	* @return mixed The next post, or NULL if it hasn't
+	*/
 	public function getNextPost($post)
 	{
 		$comparator = "";
@@ -149,6 +154,12 @@ class Blog extends Builder {
 		return $next;
 	}
 
+	
+	/**
+	* Gets the previous post, according to $dateField
+	* @param Post $post The relative post
+	* @return mixed The previous post, or NULL if it hasn't
+	*/
 	public function getPrevPost($post)
 	{
 		$comparator = "";

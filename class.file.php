@@ -38,7 +38,7 @@ class File extends Inputoutput {
 			fclose($this->__resource);
 	}
 
-	public function store()
+	public function store($contents, $nothing = NULL)
 	{
 		if(func_num_args() == 1)
 		{
@@ -51,7 +51,7 @@ class File extends Inputoutput {
 		return $this;
 	}
 
-	public function retrieve()
+	public function retrieve($filename = NULL, $nothing = NULL)
 	{
 		$this->connect("r");
 		clearstatcache();

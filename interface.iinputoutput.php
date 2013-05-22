@@ -15,15 +15,21 @@
 * @copyright	Sergi Juanola 2012-2013
 */
 interface Iinputoutput {
+	
 	/**
 	* Gets information from the data source
+	* @param string $key The key to retrieve
+	* @param mixed $default The default value, in case no key exists
+	* @return mixed The value to get
 	*/
-	function retrieve();
+	function retrieve($key, $default);
 
 	/**
 	* Saves class information to the data source
+	* @param string $key The key to store to
+	* @param mixed $value The value to store
 	*/
-	function store();
+	function store($key, $value);
 
 	/**
 	* Connects to the data source

@@ -17,10 +17,12 @@ require_once 'class.inputoutput.php';
 class Cookie extends Inputoutput {
 	/**
 	* Default properties.
+	* @param string $prefix The cookie prefix you'd like to use. Defaults to an empty string
+	* @param int $expirationTime The time, in seconds, it takes to expire a cookie from now. Do not count it from time(), as time() is explicitly calculated in store(). Defaults to 2592000 (1 month in seconds)
 	*/
 	public static $default = array(
 		'prefix' => '',
-		'expirationTime' => 2592000, // 1 month in seconds
+		'expirationTime' => 2592000,
 	);
 
 	/**
@@ -34,9 +36,11 @@ class Cookie extends Inputoutput {
 
 	/**
 	* Gets information from the data source
+	* @param string $key The cookie's key
+	* @param mixed $default The cookie's value in case no value is defined. Defaults to NULL
 	* @return mixed The cookie value
 	*/
-	public function retrieve()
+	public function retrieve($key, $default = NULL)
 	{
 		$args = func_get_args();
 		if(func_num_args() == 0)
@@ -64,7 +68,7 @@ class Cookie extends Inputoutput {
 	* @param mixed $value The cookie's value
 	* @param int $expirationTime The specific expiration time from now.
 	*/
-	public function store()
+	public function store($key, $value, $expirationTime = NULL)
 	{
 		if(func_num_args() >= 2)
 		{

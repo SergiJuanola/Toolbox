@@ -15,21 +15,39 @@ require_once 'class.inputoutput.php';
 * @link Inputoutput
 */
 class Session extends Inputoutput {
+	/**
+	* Default properties.
+	* @param string $prefix The session prefix you'd like to use. Defaults to an empty string
+	*/
 	public static $default = array(
 		'prefix' => '',
 	);
 
+	/**
+	* Building method
+	* @param array $config The config array
+	* @link Builder::build()
+	*/
 	public static function build($config = array()) {
 		return new self($config);
 	}
 
+	/**
+	* The constructor. It connects to the session
+	* @param array $config The config array
+	*/
 	public function __construct($config)
 	{
 		parent::__construct($config);
 		$this->connect();
 	}
 
-	public function store()
+	/**
+	* Saves class information to the data source
+	* @param string $key The session's key
+	* @param mixed $value The session's value
+	*/
+	public function store($key, $value)
 	{
 		if(func_num_args() == 2)
 		{
@@ -41,7 +59,13 @@ class Session extends Inputoutput {
 		return $this;
 	}
 
-	public function retrieve()
+	/**
+	* Gets information from the data source
+	* @param string $key The session's key
+	* @param mixed $default The session's value in case no value is defined. Defaults to NULL
+	* @return mixed The session value
+	*/
+	public function retrieve($key, $default = NULL)
 	{
 		$args = func_get_args();
 		if(func_num_args() == 0)
@@ -63,18 +87,27 @@ class Session extends Inputoutput {
 			return $default;
 	}
 
+	/**
+	* Starts the session, in case it was not started
+	*/
 	public function connect()
 	{
 		@session_start();
 		return $this;
 	}
 
+	/**
+	* Writes and closes the current session
+	*/
 	public function disconnect()
 	{
 		session_write_close();
 		return $this;
 	}
 
+	/**
+	* Totally destroys the current session, removing its information
+	*/
 	public function destroy()
 	{
 		$this->connect();
@@ -84,6 +117,10 @@ class Session extends Inputoutput {
 		return $this;
 	}
 
+	/**
+	* Disconnects the current session
+	* @link Session::disconnect()
+	*/
 	public function __destruct()
 	{
 		$this->disconnect();

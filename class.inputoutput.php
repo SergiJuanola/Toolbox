@@ -32,16 +32,21 @@ abstract class Inputoutput extends Builder implements Iinputoutput {
 	public static function build($config = array()) {
 		return new self($config);
 	}
-
+	
 	/**
 	* Gets information from the data source
+	* @param string $key The key to retrieve
+	* @param mixed $default The default value, in case no key exists. Defaults to NULL
+	* @return mixed The value to get
 	*/
-	public abstract function retrieve();
+	public abstract function retrieve($key, $default = NULL);
 
 	/**
 	* Saves class information to the data source
+	* @param string $key The key to store to
+	* @param mixed $value The value to store
 	*/
-	public abstract function store();
+	public abstract function store($key, $value);
 
 	/**
 	* Connects to the data source
@@ -55,7 +60,7 @@ abstract class Inputoutput extends Builder implements Iinputoutput {
 
 	/**
 	* Sets the Vault object
-	* @param $vault Vault The Vault you want to use
+	* @param Vault $vault The Vault you want to use
 	*/
 	function setVault(Vault $vault)
 	{
