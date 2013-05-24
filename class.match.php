@@ -327,14 +327,30 @@ class Match extends Builder
 		if(count($parts)==2)
 		{
 			require_once($this->matchbox.'controller.'.strtolower($parts[0]).'.php');
-			$parts[0] = $parts[0].'Controller';
-			$reflector = new ReflectionMethod($parts[0], $parts[1]);
+			$className = $parts[0].'Controller';
+
+			$class = new ReflectionClass($className);
+
+			$reflector = new ReflectionMethod($className, $parts[1]);
 			$params = array();
 			foreach ($reflector->getParameters() as $param) {
 				if(isset($this->matched['params'][$param->name]))
 			    	$params[] = $this->matched['params'][$param->name];
 			}
-			$controller = new $parts[0]($this, $this->hasToolbox()? Toolbox::build() : null);
+
+			$parentClass = $class->getParentClass();
+
+			switch ($parentClass->name) {
+				case 'Controller':
+					$controller = $this->callBasicController($className);
+					break;
+				case 'Controllertool':
+					$controller = $this->callControllertool($class);
+					break;
+			}
+
+			var_dump($controller);
+
 			if($this->hasLocale())
 			{
 				if(isset($this->matched['params']['__locale']))
@@ -352,6 +368,17 @@ class Match extends Builder
 			call_user_func_array(array($controller, $parts[1]), $params);
 			$controller->afterFire();
 		}
+	}
+
+	private function callBasicController($className)
+	{
+		return new $className($this, $this->hasToolbox()? Toolbox::build() : null);
+	}
+
+	private function callControllertool($reflectionClass)
+	{
+		$method = $reflectionClass->getMethod('build');
+		return $reflectionClass->getMethod('build')->invoke(null, $this->getDefault('Controllertool'));
 	}
 
 	private function cleanUri()

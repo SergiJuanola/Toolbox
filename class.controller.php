@@ -5,7 +5,7 @@
  */
 
 /**
-* Controller class, used by Match to map rules. Classes should extend this class.
+* Controller class, used by Match to map rules. Controllers should extend this class.
 *
 * @package Toolbox
 * @author 	Sergi Juanola 

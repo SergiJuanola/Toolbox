@@ -27,6 +27,8 @@ class ToolboxTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(array(), $app->getDefault('Base'));
 		$app->need(array('base'=>array('var1' => 'val1')));
 		$this->assertEquals(array('var1'=>'val1'), $app->getDefault('Base'));
+		$app->need(array('base'=>array('var2' => 'val2')));
+		$this->assertEquals(array('var2' => 'val2'), $app->getDefault('Base'));
 	}
 
 	/**
