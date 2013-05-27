@@ -329,8 +329,6 @@ class Match extends Builder
 			require_once($this->matchbox.'controller.'.strtolower($parts[0]).'.php');
 			$className = $parts[0].'Controller';
 
-			$class = new ReflectionClass($className);
-
 			$reflector = new ReflectionMethod($className, $parts[1]);
 			$params = array();
 			foreach ($reflector->getParameters() as $param) {
@@ -338,18 +336,7 @@ class Match extends Builder
 			    	$params[] = $this->matched['params'][$param->name];
 			}
 
-			$parentClass = $class->getParentClass();
-
-			switch ($parentClass->name) {
-				case 'Controller':
-					$controller = $this->callBasicController($className);
-					break;
-				case 'Controllertool':
-					$controller = $this->callControllertool($class);
-					break;
-			}
-
-			var_dump($controller);
+			$controller = new $className($this, $this->hasToolbox()? Toolbox::build() : null);
 
 			if($this->hasLocale())
 			{
@@ -368,17 +355,6 @@ class Match extends Builder
 			call_user_func_array(array($controller, $parts[1]), $params);
 			$controller->afterFire();
 		}
-	}
-
-	private function callBasicController($className)
-	{
-		return new $className($this, $this->hasToolbox()? Toolbox::build() : null);
-	}
-
-	private function callControllertool($reflectionClass)
-	{
-		$method = $reflectionClass->getMethod('build');
-		return $reflectionClass->getMethod('build')->invoke(null, $this->getDefault('Controllertool'));
 	}
 
 	private function cleanUri()
