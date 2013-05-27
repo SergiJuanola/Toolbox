@@ -40,7 +40,6 @@ class Toolbox {
 		foreach ($this->_config as $name => $default) {
 			$this->load($name, $default);
 		}
-		$this->prepareDependencies();
 		return $this;
 	}
 
@@ -78,7 +77,10 @@ class Toolbox {
 	*/
 	public static function build($config = array()) { 
 		if(!isset(self::$myself))
+		{
 			self::$myself = new self($config);
+			self::$myself->prepareDependencies();
+		}
 		return self::$myself;
 	}
 
@@ -126,14 +128,16 @@ class Toolbox {
 	* Prepare the dependencies of any reference to a tool in the configuration
 	* @param int $caughtDependencies The amount of previously caught dependencies
 	*/
-	private function prepareDependencies($caughtDependencies = 0)
+	private function prepareDependencies($foundDependencies = 0)
 	{
-		$currentCaughtDependencies = 0;
+		$currentFoundDependencies = 0;
+		$uncaughtDependencies = 0;
 		$_loaded = $this->_loaded;
 		foreach ($_loaded as $class => $config) {
-			if(($dependency = $this->containsDependency($config['default'])) !== FALSE)
+			$unsatisfiedDependencies = array();
+			while(($dependency = $this->containsDependency($config['default'])) !== FALSE && !in_array($dependency, $unsatisfiedDependencies))
 			{
-				$currentCaughtDependencies++;
+				$currentFoundDependencies++;
 				if($this->containsDependency($this->getDefault($dependency)) === FALSE)
 				{
 					$className = ucfirst($dependency);
@@ -142,16 +146,21 @@ class Toolbox {
 					$newConfig = $this->fixDependency($config['default'], $dependency, $object );
 					$_loaded[$class]['default'] = $newConfig;
 				}
+				else
+				{
+					$uncaughtDependencies++;
+					$unsatisfiedDependencies[] = $dependency;
+				}
 			}
 		}
 		$this->_loaded = $_loaded;
 
-		if($currentCaughtDependencies > 0)
+		if($uncaughtDependencies > 0)
 		{
-			if($caughtDependencies === $currentCaughtDependencies)
-				throw new Exception('Loop!');
+			if($foundDependencies === $currentFoundDependencies)
+				throw new Exception('There are some dependencies in your code that depend on each other, and thus cannot be resolved.');
 			else
-				$this->prepareDependencies($currentCaughtDependencies);
+				$this->prepareDependencies($currentFoundDependencies);
 		}
 	}
 
