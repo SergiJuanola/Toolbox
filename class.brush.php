@@ -24,13 +24,14 @@ class Brush extends Builder {
 	public static $default = array(
 		'match'=>NULL,
 		'layout'=>NULL,
+		'__data' => array()
 	);
 
 	/**
 	* Building method
 	* @param array $config The config array
 	* @return Brush An instance of itself
-	* @link Builder::build()
+	* @see  Builder::build()
 	*/
 	public static function build($config = array()) {
 		return new self($config);
@@ -74,6 +75,19 @@ class Brush extends Builder {
 			return $url;
 		else
 			return $this->match->url($url, $locale);
+	}
+
+	/**
+	 * Presets some data that will be passed to every {@link Brush::paint()} method of Brush
+	 * @param string $key   The data name that will be used to find this item
+	 * @param mixed $value The data content. It can be anything.
+	 */
+	public function addData($key, $value)
+	{
+		$data = $this->__data;
+		$data[$key] = $value;
+		$this->__data = $data;
+		return $this;
 	}
 	
 	/**
