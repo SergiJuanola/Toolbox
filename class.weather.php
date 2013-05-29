@@ -12,7 +12,7 @@ require_once 'class.builder.php';
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @link Builder
+* @see  Builder
 */
 class Weather extends Builder {
 	/**
@@ -32,7 +32,7 @@ class Weather extends Builder {
 	/**
 	* Building method
 	* @param array $config The config array
-	* @link Builder::build()
+	* @see  Builder::build()
 	*/
 	public static function build($config = array()) {
 		$item = new self($config);
@@ -59,7 +59,7 @@ class Weather extends Builder {
 	/**
 	* Get the current info retrieved by forecast()
 	* @return array The retrieved information
-	* @link Weather::forecast()
+	* @see  Weather::forecast()
 	*/
 	public function getInfo()
 	{

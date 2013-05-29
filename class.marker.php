@@ -13,7 +13,7 @@ require_once 'vendor/php-markdown-extra/markdown.php';
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @link Builder
+* @see  Builder
 */
 class Marker extends Builder {
 	public static $default = array();

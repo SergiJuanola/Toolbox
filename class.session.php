@@ -12,7 +12,7 @@ require_once 'class.inputoutput.php';
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @link Inputoutput
+* @see  Inputoutput
 */
 class Session extends Inputoutput {
 	/**
@@ -26,7 +26,7 @@ class Session extends Inputoutput {
 	/**
 	* Building method
 	* @param array $config The config array
-	* @link Builder::build()
+	* @see  Builder::build()
 	*/
 	public static function build($config = array()) {
 		return new self($config);
@@ -119,7 +119,7 @@ class Session extends Inputoutput {
 
 	/**
 	* Disconnects the current session
-	* @link Session::disconnect()
+	* @see  Session::disconnect()
 	*/
 	public function __destruct()
 	{

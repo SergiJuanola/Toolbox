@@ -11,7 +11,7 @@ require_once 'class.builder.php';
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @link Builder
+* @see  Builder
 */
 class Base extends Builder {
 	/**
@@ -22,7 +22,7 @@ class Base extends Builder {
 	/**
 	* Building method
 	* @param array $config The config array
-	* @link Builder::build()
+	* @see  Builder::build()
 	*/
 	public static function build($config = array()) {
 		return new self($config);

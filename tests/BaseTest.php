@@ -14,8 +14,8 @@ require_once 'class.base.php';
 * @subpackage Tests
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @link PHPUnit_Framework_TestCase
-* @link Base
+* @see  PHPUnit_Framework_TestCase
+* @see  Base
 */
 class BaseTest extends PHPUnit_Framework_TestCase {
 	

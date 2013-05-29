@@ -12,7 +12,7 @@ require_once 'class.builder.php';
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @link Builder
+* @see  Builder
 */
 class Dictionary extends Builder {
 
@@ -35,7 +35,7 @@ class Dictionary extends Builder {
 	/**
 	* Building method
 	* @param array $config The config array
-	* @link Builder::build()
+	* @see  Builder::build()
 	*/
 	public static function build($config = array()) {
 		$dict = new self($config);

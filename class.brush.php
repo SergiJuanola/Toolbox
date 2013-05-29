@@ -11,7 +11,7 @@ require_once 'class.builder.php';
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @link Builder
+* @see  Builder
 */
 class Brush extends Builder {
 
@@ -41,7 +41,7 @@ class Brush extends Builder {
 	* Saves an instance of Match
 	* @param Match $match The desired $match
 	* @return Brush An instance of itself
-	* @link Match, Brush::getMatch($match)
+	* @see  Match, Brush::getMatch($match)
 	*/
 	public function setMatch($match)
 	{
@@ -52,7 +52,7 @@ class Brush extends Builder {
 	/**
 	* Retrieves the saved Match instance
 	* @return Match the stored $match
-	* @link Match, Brush::setMatch($match)
+	* @see  Match, Brush::setMatch($match)
 	*/
 	public function getMatch()
 	{
@@ -67,7 +67,7 @@ class Brush extends Builder {
 	* @param string $url The url we want to translate
 	* @param mixed $locale The locale we want to use. If not set (or FALSE), the current $locale from template is used. Defaults to FALSE
 	* @return string the localised url
-	* @link Match::url(), Brush::setMatch()
+	* @see  Match::url(), Brush::setMatch()
 	*/
 	public function url($url, $locale = FALSE)
 	{
@@ -96,7 +96,7 @@ class Brush extends Builder {
 	* If Brush has a $match, it gets the current url and localises to the selected locale.
 	* @param string $locale The locale we want to use
 	* @return string the localised url
-	* @link Match::url(), Brush::setMatch()
+	* @see  Match::url(), Brush::setMatch()
 	*/
 	public function getCurrentUrlLocalized($locale)
 	{
@@ -115,6 +115,11 @@ class Brush extends Builder {
 	*/
 	public function render($view, $params = array(), $partial = FALSE, $return = FALSE)
 	{
+		foreach ( $this->__data as $key => $value )
+		{
+			$$key = $value;
+		}
+
 		foreach ( $params as $key => $value )
 		{
 			$$key = $value;
@@ -145,7 +150,7 @@ class Brush extends Builder {
 	* @param boolean $partial TRUE if the view doesn't need layout, FALSE otherwise. Defaults to FALSE
 	* @param boolean $return TRUE if the view needs to be returned, FALSE if it needs to be echoed. Defaults to FALSE
 	* @return mixed The rendered view if $return is TRUE, or returns TRUE otherwise
-	* @link Brush::render()
+	* @see Brush::render()
 	*/
 	public function paint($view, $params = array(), $partial = FALSE, $return = FALSE)
 	{

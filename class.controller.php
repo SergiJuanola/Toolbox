@@ -10,7 +10,7 @@
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @link Match
+* @see  Match
 */
 class Controller {
 	/**
@@ -42,7 +42,7 @@ class Controller {
 	*/
 	protected function setBrush(Brush $brush)
 	{
-		$this->tool->setBrush($this->brush);
+		$this->tool->setBrush($brush);
 		return $this;
 	}
 
@@ -80,7 +80,7 @@ class Controller {
 	*/
 	protected function setDictionary(Dictionary $dictionary)
 	{
-		$this->tool->setDictionary($this->dictionary);
+		$this->tool->setDictionary($dictionary);
 		return $this;
 	}
 
@@ -99,7 +99,7 @@ class Controller {
 	*/
 	protected function setMatch(Match $match)
 	{
-		$this->tool->setMatch($this->match);
+		$this->tool->setMatch($match);
 		return $this;
 	}
 
@@ -118,7 +118,7 @@ class Controller {
 	*/
 	protected function setPdo(Pdo $pdo)
 	{
-		$this->tool->setPdo($this->pdo);
+		$this->tool->setPdo($pdo);
 		return $this;
 	}
 
@@ -137,7 +137,7 @@ class Controller {
 	*/
 	protected function setSession(Session $session)
 	{
-		$this->tool->setSession($this->session);
+		$this->tool->setSession($session);
 		return $this;
 	}
 
@@ -156,7 +156,7 @@ class Controller {
 	*/
 	protected function setToolbox(Toolbox $toolbox)
 	{
-		$this->tool->setToolbox($this->toolbox);
+		$this->tool->setToolbox($toolbox);
 		return $this;
 	}
 
@@ -175,7 +175,7 @@ class Controller {
 	*/
 	protected function setVault(Vault $vault)
 	{
-		$this->tool->setVault($this->vault);
+		$this->tool->setVault($vault);
 		return $this;
 	}
 
@@ -186,7 +186,7 @@ class Controller {
 	* means it can be used in case you always instance the same classes
 	* with a concrete configuration, or to check if a user is logged in,
 	* for example.
-	* @link Controller::afterFire()
+	* @see  Controller::afterFire()
 	*/
 	public function beforeFire() {}
 
@@ -197,7 +197,7 @@ class Controller {
 	* means it can be used for storing information in non volatile
 	* systems (databases, sessions, files) that happen to be used
 	* in every action.
-	* @link Controller::beforeFire()
+	* @see  Controller::beforeFire()
 	*/
 	public function afterFire() {}
 

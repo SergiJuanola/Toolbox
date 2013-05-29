@@ -1,3 +1,3 @@
 #!/bin/bash
 
-phpdoc --ignore vendor/ --validate --ignore tests/ -d . -t ../toolbox-docs -p
+apigen --source "./" --exclude "*/tests/*" --exclude "*/vendor/*" --destination ../toolbox-docs/ --title "Toolbox Framework"

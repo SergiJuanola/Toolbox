@@ -73,7 +73,7 @@ class Toolbox {
 	/**
 	* Building method. It is the only way to create Toolbox
 	* @param array $config The config array
-	* @link Builder::build()
+	* @see  Builder::build()
 	*/
 	public static function build($config = array()) { 
 		if(!isset(self::$myself))

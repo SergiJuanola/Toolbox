@@ -12,7 +12,7 @@ require_once 'class.inputoutput.php';
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @link Builder
+* @see  Builder
 */
 class File extends Inputoutput {
 	public static $default = array(

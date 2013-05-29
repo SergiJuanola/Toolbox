@@ -13,7 +13,7 @@ require_once 'vendor/WideImage/WideImage.php';
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @link Builder
+* @see  Builder
 */
 class Wideimagetool extends Builder {
 	/**
@@ -25,8 +25,8 @@ class Wideimagetool extends Builder {
 	* Building method. If $image is defined in the $config, it will automatically call Wideimagetool::load() and return the same kind of item it would return.
 	* @param array $config The config array
 	* @return mixed WideImage_Image WideImage_PaletteImage or WideImage_TrueColorImage instance if $image was set, or itself otherwise.
-	* @link Builder::build()
-	* @link Wideimagetool::load()
+	* @see  Builder::build()
+	* @see  Wideimagetool::load()
 	*/
 	public static function build($config = array()) {
 		$tool = new self($config);
@@ -40,7 +40,7 @@ class Wideimagetool extends Builder {
 	* Load an image into WideImage, and return a processable item
 	* @param mixed $image File name, url, HTML file input field name, binary string, or a GD image resource
 	* @return WideImage_Image WideImage_PaletteImage or WideImage_TrueColorImage instance
-	* @link WideImage::load()
+	* @see  WideImage::load()
 	*/
 	public function load($image)
 	{

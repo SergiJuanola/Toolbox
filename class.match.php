@@ -12,7 +12,7 @@ require_once 'class.builder.php';
 * @package Toolbox
 * @author 	Sergi Juanola 
 * @copyright	Sergi Juanola 2012-2013
-* @link Builder
+* @see  Builder
 */
 class Match extends Builder
 {
@@ -22,7 +22,7 @@ class Match extends Builder
 	const CALLER_UNKNOWN = 0;
 	/**
 	* The callback is a controller specially designed for Match
-	* @link Controller
+	* @see  Controller
 	*/
 	const CALLER_CONTROLLER = 1;
 	/**
@@ -55,7 +55,7 @@ class Match extends Builder
 	/**
 	* Building method
 	* @param array $config The config array
-	* @link Builder::build()
+	* @see  Builder::build()
 	*/
 	public static function build($config = array()) {
 		return new self($config);
@@ -619,7 +619,7 @@ class Match extends Builder
 
 	/**
 	 * Based on the script by Jesse Skinner
-	 * @link http://www.thefutureoftheweb.com/blog/use-accept-language-header
+	 * @see  http://www.thefutureoftheweb.com/blog/use-accept-language-header
 	 */
 	public function getAcceptLanguages($httpAcceptLanguage = NULL)
 	{
@@ -693,7 +693,7 @@ class Match extends Builder
 *
 * @package Toolbox
 * @subpackage Callbacks
-* @link Match
+* @see  Match
 */
 class MatchCallbacks
 {
