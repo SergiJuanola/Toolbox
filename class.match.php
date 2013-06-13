@@ -61,6 +61,16 @@ class Match extends Builder
 		return new self($config);
 	}
 
+	public function isAjax()
+	{
+		return ((isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && ( $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest' )) || (isset($_GET['ajax']) && $_GET['ajax'] == true) || (isset($_POST['ajax']) && $_POST['ajax'] == true));
+	}
+
+	public function baseUrl()
+	{
+		return $this->basePath;
+	}
+
 	private function makeItLocale($uri)
 	{
 		return "/{{__locale:locale}}".$uri;
