@@ -19,10 +19,10 @@ interface Iinputoutput {
 	/**
 	* Gets information from the data source
 	* @param string $key The key to retrieve
-	* @param mixed $default The default value, in case no key exists
+	* @param mixed $default The default value, in case no key exists. Defaults to NULL
 	* @return mixed The value to get
 	*/
-	function retrieve($key, $default);
+	function retrieve($key, $default = NULL);
 
 	/**
 	* Saves class information to the data source
