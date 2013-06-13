@@ -201,6 +201,21 @@ class Controller {
 	*/
 	public function afterFire() {}
 
+	/**
+	* Encode a content to JSON and serve as a response.
+	* 
+	* This method converts a content into a JSON string, echoes it (with
+	* the proper headers) and ends the request. It also calls 
+	* {@link Controller::afterFire()} after sending the JSON, but then the
+	* request is ended.
+	* @param  mixed $content The content to send as a response.
+	*/
+	public function jsonResponse($content) {
+		header('Content-type: application/json');
+		echo json_encode($content);
+		$this->afterFire();
+		exit();
+	}
 
 }
  ?>
