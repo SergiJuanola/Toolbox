@@ -39,26 +39,54 @@ class Dictionary extends Builder {
 	*/
 	public static function build($config = array()) {
 		$dict = new self($config);
-		if(empty($dict->dictionaries) || empty($dict->match) || !$dict->match->hasLocale())
+		$dict->prepare();
+		return $dict;
+	}
+
+	private function prepare()
+	{
+		if(empty($this->dictionaries) || empty($this->match) || !$this->match->hasLocale())
 		{
-			$dict->canTranslate = FALSE;
+			$this->canTranslate = FALSE;
 		}
 		else
 		{
-			$locale = empty($dict->match->locale)? $dict->match->getDefaultLocale() : $dict->match->locale;
-			$dict->locale = $locale;
-			$file = $dict->dictionaries.$locale.'.php';
+			$locale = empty($this->match->locale)? $this->match->getDefaultLocale() : $this->match->locale;
+			$this->locale = $locale;
+			$file = $this->dictionaries.$locale.'.php';
 			if(!file_exists($file))
 			{
-				$dict->canTranslate = FALSE;
+				$this->canTranslate = FALSE;
 			}
 			else
 			{
-				$dict->__dictionary=include($file);
-				$dict->canTranslate = TRUE;
+				$this->__dictionary=include($file);
+				$this->canTranslate = TRUE;
 			}
 		}
-		return $dict;
+	}
+
+	/**
+	* Saves an instance of Match
+	* @param Match $match The desired $match
+	* @return Brush An instance of itself
+	* @see  Match, Brush::getMatch($match)
+	*/
+	public function setMatch($match)
+	{
+		$this->match = $match;
+		$this->prepare();
+		return $this;
+	}
+
+	/**
+	* Retrieves the saved Match instance
+	* @return Match the stored $match
+	* @see  Match, Brush::setMatch($match)
+	*/
+	public function getMatch()
+	{
+		return $this->match;
 	}
 
 	/**
