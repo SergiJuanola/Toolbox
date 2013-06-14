@@ -423,13 +423,18 @@ class Match extends Builder
 	private function matchUri()
 	{
 		$method = strtolower($_SERVER['REQUEST_METHOD']);
+
+		$uriSplitted = explode("?", $this->uri);
+		$uriWithoutGet = $uriSplitted[0];
+		$uriGetParams = !empty($uriSplitted[1])? "?".$uriSplitted[1] : "";
+
 		foreach ($this->{$method} as $uri => $callback) {
 			$oriUri = $uri;
 			$uri = $this->cleanParams($uri);
 			if (strpos($uri, "/") == (strlen($uri)-1)) {
 				$uri = substr($uri, 0, (strlen($uri)-1));
 			}
-			$result = preg_match("@^".$uri."/?$@", $this->uri, $params);
+			$result = preg_match("@^".$uri."/?$@", $uriWithoutGet, $params);
 			if($result === 1)
 			{
 				foreach($params as $key=>$var){ 
@@ -442,7 +447,7 @@ class Match extends Builder
 				} 
 				return array(
 								'method' => $method,
-								'uri' => $this->uri,
+								'uri' => $uriWithoutGet.$uriGetParams,
 								'alias' => $this->getUriAlias(),
 								'rule' => $oriUri,
 								'regex' => $uri,
