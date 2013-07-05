@@ -80,7 +80,7 @@ class Match extends Builder
 	{
 		$uri = "/".$locale.$uri;
 		$find = array(
-			"@^/(\w{".$this->getLocaleLength()."})/@",
+			"@^/(".implode('|', $this->locales).")/@",
 		);
 		$replace = array(
 			"/(?P<__locale>\\1)/",
@@ -407,7 +407,7 @@ class Match extends Builder
 		$replace = array(
 			"(?P<\\2>[a-zA-Z0-9\+\-_]+)",
 			"(?P<\\2>\-?\d+)",
-			"(?P<\\2>\w{".$this->getLocaleLength()."})",
+			"(?P<\\2>".implode("|", $this->locales)."})",
 			"(?P<\\2>\w+)",
 			"(?P<\\2>\w+)",
 			"(?P<\\2>[a-zA-Z0-9\+\-_]+)",
