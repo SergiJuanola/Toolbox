@@ -553,8 +553,15 @@ class Match extends Builder
 
 	public function url($url, $locale = FALSE)
 	{
+
+		if(filter_var($url, FILTER_VALIDATE_URL))
+		{
+			return $url;
+		}
+
 		if(empty($url))
 			$url = "/";
+
 		if($locale === FALSE)
 		{
 			$locale = $this->getLocale();
