@@ -156,4 +156,108 @@ class Brush extends Builder {
 	{
 		return $this->render($view, $params, $partial, $return);
 	}
+
+	/**
+	 * Generate a basic breadcrumbs structure
+	 * @param  array $breadcrumbs An array containing each item for breadcrumbs. The key represent 
+	 * the Label, and the Value represents the Url. If the value is NULL or an empty string,
+	 * no link will be used.
+	 * @param string $separator The separator used. Defaults to ' &gt; ' (>, surrounded by spaces)
+	 * @param string $home The home label. If empty, no link to home is set. Defaults to 'Home'
+	 * @param bool $only_these If TRUE, it skips the already set breadcrumbs from Brush {@see Brush}
+	 */
+	public function breadcrumbs($breadcrumbs, $separator=" &gt; ", $home = 'Home', $only_these = FALSE)
+	{
+		$breadcrumbsFinal = array();
+		if(!empty($home))
+		{
+			$breadcrumbsFinal[] = '<a href="'.$this->url('/').'">'.$home.'</a>';
+		}
+		$bcArray = array();
+		if(!empty($breadcrumbs))
+		{
+			foreach ($breadcrumbs as $label => $url) {
+				$bcArray[] = array('label' => $label, 'url' => $url);
+			}
+		}
+		if($only_these !== TRUE)
+		{
+			$bcArray = array_merge($this->__breadcrumbs, $bcArray);
+		}
+		if(empty($bcArray))
+		{
+			return "";
+		}
+		$this->__breadcrumbs = $bcArray;
+
+		$this->popBreadcrumbUrl();
+
+
+		foreach ($this->__breadcrumbs as $bc) {
+			$url = $bc['url'];
+			$label = $bc['label'];
+			if(!empty($url))
+			{
+				$breadcrumbsFinal[] = '<a href="'.$url.'">'.$label.'</a>';
+			}
+			else
+			{
+				$breadcrumbsFinal[] = $label;
+			}
+		}
+		return implode($separator, $breadcrumbsFinal);
+	}
+
+	public function addBreadcrumb($label, $url = NULL)
+	{
+		$bcs = $this->__breadcrumbs;
+		$bcs[] = array('label'=>$label, 'url'=>$this->url($url));
+		$this->__breadcrumbs = $bcs;
+		return $this;
+	}
+
+	public function popBreadcrumb(&$breadcrumb = NULL)
+	{
+		$breadcrumbs = $this->__breadcrumbs;
+		$breadcrumb = array_pop($breadcrumbs);
+		$this->__breadcrumbs = $breadcrumbs;
+		return $this;
+	}
+
+	public function popBreadcrumbUrl(&$url = NULL)
+	{
+		$breadcrumbs = $this->__breadcrumbs;
+		if(!empty($breadcrumbs))
+		{
+			$lastBc = $breadcrumbs[count($breadcrumbs)-1];
+			$url = $lastBc['url'];
+			$lastBc['url'] = NULL;
+			$breadcrumbs[count($breadcrumbs)-1] = $lastBc;
+			$this->__breadcrumbs = $breadcrumbs;
+		}
+		return $this;
+	}
+
+	public function generateTitle($breadcrumbs = NULL, $separator = ' - ', $only_these = FALSE)
+	{
+		$titleParts = array();
+		$bcArray = array();
+		if(!empty($breadcrumbs))
+		{
+			foreach ($breadcrumbs as $label => $url) {
+				$bcArray[] = array('label' => $label, 'url' => $url);
+			}
+		}
+		if($only_these !== TRUE)
+		{
+			$bcArray = array_merge($this->__breadcrumbs, $bcArray);
+		}
+		$titleParts[] = $this->title;
+
+		foreach ($bcArray as $bc) {
+			$titleParts[] = $bc['label'];
+		}
+		return implode($separator, $titleParts);
+	}
+
 }
