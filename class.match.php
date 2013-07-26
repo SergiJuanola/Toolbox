@@ -230,7 +230,7 @@ class Match extends Builder
 	private function decideCaller()
 	{
 		$callback = $this->matched['callback'];
-		if(filter_var($callback, FILTER_VALIDATE_URL))
+		if($this->isUrl($callback))
 		{
 			return Match::CALLER_EXTERNAL;
 		}
@@ -348,6 +348,7 @@ class Match extends Builder
 
 			$controller = new $className($this, $this->hasToolbox()? Toolbox::build() : null);
 
+
 			if($this->hasLocale())
 			{
 				if(isset($this->matched['params']['__locale']))
@@ -407,7 +408,7 @@ class Match extends Builder
 		$replace = array(
 			"(?P<\\2>[a-zA-Z0-9\+\-_]+)",
 			"(?P<\\2>\-?\d+)",
-			"(?P<\\2>".implode("|", $this->locales)."})",
+			"(?P<\\2>".implode("|", $this->locales).")",
 			"(?P<\\2>\w+)",
 			"(?P<\\2>\w+)",
 			"(?P<\\2>[a-zA-Z0-9\+\-_]+)",
@@ -427,10 +428,9 @@ class Match extends Builder
 		$uriSplitted = explode("?", $this->uri);
 		$uriWithoutGet = $uriSplitted[0];
 		$uriGetParams = !empty($uriSplitted[1])? "?".$uriSplitted[1] : "";
-
 		foreach ($this->{$method} as $uri => $callback) {
 			$oriUri = $uri;
-			$uri = $this->cleanParams($uri);
+			$uri = $this->cleanParams($oriUri);
 			if (strpos($uri, "/") == (strlen($uri)-1)) {
 				$uri = substr($uri, 0, (strlen($uri)-1));
 			}
@@ -548,13 +548,12 @@ class Match extends Builder
 				}
 			}
 		}
-		return substr($this->uri, 3);
+		return substr($this->uri, strlen($this->getLocale())+1);
 	}
 
 	public function url($url, $locale = FALSE)
 	{
-
-		if(filter_var($url, FILTER_VALIDATE_URL))
+		if($this->isUrl($url))
 		{
 			return $url;
 		}
@@ -707,6 +706,11 @@ class Match extends Builder
 				return TRUE;
 		}
 		return FALSE;
+	}
+
+	public function isUrl($url)
+	{
+		return preg_match('@^(http|https|ftp)://([A-Z0-9][A-Z0-9_-]*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?/?@i', $url) > 0;
 	}
 }
 
