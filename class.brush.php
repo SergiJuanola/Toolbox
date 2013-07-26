@@ -18,13 +18,20 @@ class Brush extends Builder {
 	/**
 	* Default properties.
 	* @param Match $match The desired $match
-	* @param string $views The folder where the views are stored. End if with '/'
+	* @param string $views The folder where the views are stored. End it with '/'
 	* @param string $layout The layout being used. If set to NULL, no layout is used
+	* @param array __data The pending data sent to the view. Use {@link addData}.
+	* @param array __breadcrumbs The already added breadcrumbs to the view.
+	* @param string title The title for the website. It will use breadcrumbs to popuplate
+	* the rest of the title.
 	*/
 	public static $default = array(
 		'match'=>NULL,
 		'layout'=>NULL,
-		'__data' => array()
+		'views'=>NULL,
+		'__data' => array(),
+		'__breadcrumbs' => array(),
+		'title' => ''
 	);
 
 	/**
@@ -72,7 +79,7 @@ class Brush extends Builder {
 	public function url($url, $locale = FALSE)
 	{
 		if(empty($this->match))
-			return $url;
+			return $url;	
 		else
 			return $this->match->url($url, $locale);
 	}
