@@ -44,7 +44,16 @@ class Pdotool extends Builder {
 					break;
 			}
 		}
-		$pdo = new PDO($self->dsn, $self->user, $self->pass);
+		$flags = array();
+		if(Pdotool::$default['driver'] == 'mysql')
+		{
+			$flags[PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = TRUE;
+			if(Pdotool::$default['charset'] == 'utf8')
+			{
+				$flags[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES 'utf8'";
+			}
+		}
+		$pdo = new PDO($self->dsn, $self->user, $self->pass, $flags);
 		return $pdo;
 	}
 
